@@ -18,7 +18,7 @@ input::placeholder {
 }
 
 .text-blue-300 {
-  color: rgb(0, 0, 0) !important; /* Adjusted for visibility */
+  color:  #19b3faab !important; /* Adjusted for visibility */
 }
 
 /* Rest of the styles remain the same */
