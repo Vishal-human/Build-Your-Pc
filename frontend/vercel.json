@@ -1,8 +1,8 @@
 {
     "rewrites": [
       {
-        "source": "/api/(.*)",
-        "destination": "https://build-your-pc.vercel.app/"
+        "source": "/login",
+        "destination": "https://build-your-pc.vercel.app/login"
       }
     ]
   }
