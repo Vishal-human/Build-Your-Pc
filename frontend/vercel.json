@@ -1,8 +1,13 @@
 {
+    "version": 2,
     "rewrites": [
       {
-        "source": "/login",
-        "destination": "https://build-your-pc.vercel.app/login"
+        "source": "/",
+        "destination": "/views/index.ejs"
+      },
+      {
+        "source": "/(.*)",
+        "destination": "/views/$1"
       }
     ]
   }
