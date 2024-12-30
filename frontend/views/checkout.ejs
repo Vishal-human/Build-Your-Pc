@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Build Your PC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../css/checkout.css">
+</head>
+<body class="relative min-h-screen py-12 px-4 sm:px-6 lg:px-8" style="background-color: #0a192f;">
+    <!-- Background overlay -->
+    <div class="bg-overlay"></div>
+    
+    <div class="max-w-7xl mx-auto relative z-10">
+        <%- include('partials/header') %>
+
+        <!-- Single Form -->
+        <form id="checkoutForm" method="POST" action="/checkout">
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Address Section -->
+                <div>
+                    <%- include('partials/address-form') %>
+                </div>
+
+                <!-- Payment Section -->
+                <div>
+                    <%- include('partials/payment-form') %>
+                    <div class="mt-8">
+                        <button type="submit" class="w-full py-3 bg-blue-700 text-white font-semibold rounded-2xl shadow-md hover:bg-blue-600">
+                            Place Order
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+ 
+</body>
+</html>

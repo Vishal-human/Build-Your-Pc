@@ -39,4 +39,21 @@ router.get('/assemble', (req, res) => {
   res.render('assemble', { title: 'Assemble Your PC' });
 });
 
+router.get('/checkout', (req, res) => {
+  res.render('checkout', { 
+    title: 'Checkout',
+    siteName: 'BuildYourPC',
+    imageUrl: 'https://images.unsplash.com/photo-1628269989095-ef8569497706?q=80&w=1528&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    action: '/checkout',
+   });
+});
+
+router.post('/checkout', (req, res) => {
+  console.log('This is the data' , req.body);
+  res.json(req.body);
+});
+
+
+
+
 module.exports = router;
