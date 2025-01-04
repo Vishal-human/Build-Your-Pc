@@ -66,6 +66,11 @@
                             </div>
                             <a href="#" class="text-blue-300 hover:underline">Forgot password?</a>
                         </div>
+                        <% if (error) { %>
+                        <div class="text-red-500 text-sm mt-2">
+                            <%= error %>
+                        </div>
+                        <% } %>
                         <button type="submit" 
                                 class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg text-base">
                             Sign In
