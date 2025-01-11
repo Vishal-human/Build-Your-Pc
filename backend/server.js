@@ -3,44 +3,62 @@ const mongoose = require('mongoose');
 const path = require('path');
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
-const viewroutes = require('./routes/viewroutes')
+const ejs = require('ejs');
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
+const MongoStore = require('connect-mongo'); // Use MongoDB session store
 
 // Load environment variables
 dotenv.config();
 
 const app = express();
 
-// Middleware to parse JSON bodies
+// Middleware setup
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.set('views', path.join(__dirname, '../frontend/views'));
+app.use(express.static(path.join(__dirname, '../frontend'))); // Serve static files
+app.set('view engine', 'ejs');
 
 
-// Serve static files (HTML, CSS, JS, images)
-app.use(express.static(path.join(__dirname, '../frontend')));
-// Set EJS as the view engine
-app.set('view engine', 'ejs')
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || '1234',
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGODB_URI || 'mongodb://localhost:27017/buildYourPC',
+      ttl: 2 * 24 * 60 * 60, // Time-to-live: 2 days in seconds
+    }),
+    cookie: {
+      maxAge: 2 * 24 * 60 * 60 * 1000, // 2 days in milliseconds
+      secure: false, // Set to true if using HTTPS
+    },
+  })
+);
 
-
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/buildYourPC', { useNewUrlParser: true, useUnifiedTopology: true })
+// MongoDB connection
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/buildYourPC', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
-
 
 // View Routes
 const viewRoutes = require('./routes/viewroutes');
 app.use('/', viewRoutes);
 
-// 404 Handler
+// 404 Error Handler
 app.use((req, res) => {
   res.status(404).send('404: Page not found');
 });
-
-
 
 // Start the server
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}...`);
+ 
 });
