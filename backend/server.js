@@ -7,7 +7,9 @@ const ejs = require('ejs');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const MongoStore = require('connect-mongo'); // Use MongoDB session store
+const cors = require('cors'); // Enable CORS it 
 
+``
 // Load environment variables
 dotenv.config();
 
@@ -51,6 +53,12 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/buildYour
 const viewRoutes = require('./routes/viewroutes');
 app.use('/', viewRoutes);
 
+// Admin Routes
+const adminRoutes = require('./routes/adminroutes');
+app.use('/admin', adminRoutes);
+
+app.use(cors());
+
 // 404 Error Handler
 app.use((req, res) => {
   res.status(404).send('404: Page not found');
@@ -58,7 +66,8 @@ app.use((req, res) => {
 
 // Start the server
 const PORT = process.env.PORT || 4000;
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}...`);
- 
+
 });

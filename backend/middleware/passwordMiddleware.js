@@ -13,6 +13,7 @@ const encryptPassword = async (req, res, next) => {
   }
 };
 
+
 // Middleware to compare passwords (for login authentication)
 const comparePassword = async (candidatePassword, hashedPassword) => {
   return await bcrypt.compare(candidatePassword, hashedPassword);

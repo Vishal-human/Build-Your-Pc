@@ -1,24 +1,25 @@
 /* Same theme as login.css */
 :root {
-    --navy-800: #1a2744;
-    --navy-900: #0f172a;
-  }
-  
-  body {
-    background-color: var(--navy-900);
-  }
-  
-  /* Improve text visibility */
-  input::placeholder {
-    color: rgba(0, 0, 0, 0.5) !important;
-  }
-  
-  /* Hover effects and animations */
-  button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 16px -4px rgba(59, 130, 246, 0.25);
-  }
-  
-  .text-blue-300 {
-    color: #19b3faab !important;
-  }
+  --navy-800: #1a2744;
+  --navy-900: #0f172a;
+}
+
+body {
+  background-color: var(--navy-900);
+}
+
+/* Improve text visibility */
+input::placeholder {
+  color: rgb(219 234 254) !important;
+  /* text-blue-100 color from Tailwind */
+}
+
+/* Hover effects and animations */
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px -4px rgba(59, 130, 246, 0.25);
+}
+
+.text-blue-300 {
+  color: #19b3faab !important;
+}

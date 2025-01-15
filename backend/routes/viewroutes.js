@@ -7,7 +7,6 @@ const { isAuthenticated } = require('../middleware/sessionMiddleware');
 // Route: Home
 router.get('/', (_, res) => {
   res.render('index', { title: 'Home - Build Your PC' });
- 
 
 });
 
@@ -31,7 +30,6 @@ router.post('/login', async (req, res) => {
 
   try {
     const user = await User.findOne({ email });
-    console.log(req.session.user.id); 
     if (!user) {
       return res.status(400).render('login', {
         email,
@@ -43,7 +41,7 @@ router.post('/login', async (req, res) => {
         imageUrl: 'https://images.unsplash.com/photo-1628269989095-ef8569497706?q=80&w=1528&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
         error: 'User not found.',
       });
-     
+
     }
 
     const isMatch = await comparePassword(password, user.password);
@@ -62,6 +60,7 @@ router.post('/login', async (req, res) => {
 
     // Store user information in session
     req.session.user = { id: user._id, email: user.email };
+    console.log(req.session.user.id);
     res.redirect('/assemble');
   } catch (err) {
     console.error(err);
@@ -80,7 +79,7 @@ router.get('/signup', (_, res) => {
     siteName: 'BuildYourPC',
     imageUrl: 'https://images.unsplash.com/photo-1733042601024-b32fef0e743f?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     emailerror: '',
-    error: '',
+    passworderror: '',
   });
 });
 
@@ -89,7 +88,17 @@ router.post('/signup', async (req, res, next) => {
   const { fullname, email, password, confirmPassword } = req.body;
 
   if (password !== confirmPassword) {
-    return res.status(400).send('Passwords do not match.');
+    return res.render('signup', {
+      fullname,
+      email,
+      title: 'Sign Up - Build Your PC',
+      loginUrl: '/login',
+      signupAction: '/signup',
+      siteName: 'BuildYourPC',
+      imageUrl: 'https://images.unsplash.com/photo-1733042601024-b32fef0e743f?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      emailerror: ' ',
+      passworderror: 'Passwords do not match.',
+    });
   }
 
   next();
@@ -108,7 +117,7 @@ router.post('/signup', async (req, res, next) => {
         siteName: 'BuildYourPC',
         imageUrl: 'https://images.unsplash.com/photo-1733042601024-b32fef0e743f?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
         emailerror: 'Email already exists.',
-        error: '',
+        passworderror: ' ',
       });
     }
 
@@ -151,7 +160,6 @@ router.post('/checkout', isAuthenticated, (req, res) => {
     card,
     upi,
   };
-
   // Store the data in the database
   const checkout = new Checkout(checkoutDetails);
   checkout.save()

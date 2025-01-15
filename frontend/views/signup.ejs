@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= title || "BuildYourPC - Sign Up" %></title>
+  <title>
+    <%= title || "BuildYourPC - Sign Up" %>
+  </title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="/css/signup.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,14 +19,18 @@
     }
   </style>
 </head>
+
 <body class="font-['Inter']">
   <div class="flex h-full">
     <!-- Left side -->
     <div class="hidden lg:flex lg:w-1/2 items-center justify-center relative bg-navy-900 overflow-hidden">
       <div class="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-navy-900/90 z-10"></div>
-      <img src="<%= imageUrl || '' %>" alt="Gaming PC Setup" class="absolute inset-0 w-full h-full object-cover opacity-75">
+      <img src="<%= imageUrl || '' %>" alt="Gaming PC Setup"
+        class="absolute inset-0 w-full h-full object-cover opacity-75">
       <div class="relative z-20 p-8 text-center">
-        <h2 class="text-3xl lg:text-4xl font-bold text-white mb-4"><%= siteName || "Build Your PC" %></h2>
+        <h2 class="text-3xl lg:text-4xl font-bold text-white mb-4">
+          <%= siteName || "Build Your PC" %>
+        </h2>
         <p class="text-blue-100 text-base lg:text-lg max-w-md mx-auto font-medium">Build your dream PC with ease.</p>
       </div>
     </div>
@@ -37,9 +44,11 @@
             <div class="relative">
               <div class="absolute inset-0 bg-blue-500 rounded-xl blur-xl opacity-30"></div>
               <div class="relative bg-navy-800 p-4 rounded-xl border border-blue-500/30">
-                <svg class="h-12 w-12 text-blue-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect width="20" height="14" x="2" y="3" rx="2"/>
-                  <line x1="2" x2="22" y1="20" y2="20"/>
+                <svg class="h-12 w-12 text-blue-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <rect width="20" height="14" x="2" y="3" rx="2" />
+                  <line x1="2" x2="22" y1="20" y2="20" />
                 </svg>
               </div>
             </div>
@@ -53,33 +62,40 @@
           <form id="signupForm" class="space-y-4" action="<%= signupAction || '/signup' %>" method="POST">
             <div class="space-y-1">
               <label for="fullname" class="text-sm font-medium text-blue-100 block">Full Name</label>
-              <input type="text" id="fullname" name="fullname" 
-                     class="block w-full px-3 py-2 bg-navy-900 border border-blue-500/30 rounded-lg text-sm"
-                     placeholder="Enter your full name" value="<%= fullname || '' %>">
+              <input type="text" id="fullname" name="fullname"
+                class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-slate-400"
+                placeholder="Enter your full name" value="<%= fullname || '' %>">
             </div>
 
             <div class="space-y-1">
               <label for="email" class="text-sm font-medium text-blue-100 block">Email</label>
               <input type="email" id="email" name="email"
-                 class="block w-full px-3 py-2 bg-navy-900 border border-blue-500/30 rounded-lg text-sm"
-                 placeholder="Enter your email" value="<%= email || '' %>">
+                class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-slate-400"
+                placeholder="Enter your email" value="<%= email || '' %>" autocomplete="off">
               <% if (emailerror) { %>
-              <p class="text-red-500 text-xs mt-1"><%= emailerror %></p>
-              <% } %>
+                <p class="text-red-500 text-xs mt-1">
+                  <%= emailerror %>
+                </p>
+                <% } %>
             </div>
 
             <div class="space-y-1">
               <label for="password" class="text-sm font-medium text-blue-100 block">Password</label>
               <input type="password" id="password" name="password"
-                     class="block w-full px-3 py-2 bg-navy-900 border border-blue-500/30 rounded-lg text-sm"
-                     placeholder="Enter your password">
+                class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-slate-400"
+                placeholder="Enter your password" autocomplete="new-password">
+              <% if (passworderror) { %>
+                <p class="text-red-500 text-xs mt-1">
+                  <%= passworderror %>
+                </p>
+                <% } %>
             </div>
 
             <div class="space-y-1">
               <label for="confirmPassword" class="text-sm font-medium text-blue-100 block">Confirm Password</label>
               <input type="password" id="confirmPassword" name="confirmPassword"
-                     class="block w-full px-3 py-2 bg-navy-900 border border-blue-500/30 rounded-lg text-sm"
-                     placeholder="Confirm your password">
+                class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-slate-400"
+                placeholder="Confirm your password" autocomplete="new-password">
             </div>
 
             <button type="submit" class="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-lg text-sm">
@@ -87,7 +103,7 @@
             </button>
           </form>
           <p class="mt-6 text-center text-blue-100 text-sm">
-            Already have an account? 
+            Already have an account?
             <a href="<%= loginUrl || '#' %>" class="text-blue-300 font-semibold">Log In</a>
           </p>
         </div>
@@ -95,8 +111,5 @@
     </div>
   </div>
 </body>
+
 </html>
-
-
-
-
