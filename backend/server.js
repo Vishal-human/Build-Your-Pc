@@ -9,7 +9,6 @@ const cookieParser = require('cookie-parser');
 const MongoStore = require('connect-mongo'); // Use MongoDB session store
 const cors = require('cors'); // Enable CORS it 
 
-``
 // Load environment variables
 dotenv.config();
 
@@ -20,10 +19,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.set('views', path.join(__dirname, '../frontend/views'));
-app.use(express.static(path.join(__dirname, '../frontend'))); // Serve static files
-app.set('view engine', 'ejs');
 
+// Set up multiple view paths
+app.set('view engine', 'ejs');
+app.set('views', [
+  path.join(__dirname, '../frontend/views/customerview'),
+  path.join(__dirname, '../frontend/views/adminview'),
+]);
+
+// Serve static files
+app.use(express.static(path.join(__dirname, '../frontend')));
 
 app.use(
   session({
@@ -41,6 +46,9 @@ app.use(
   })
 );
 
+// Enable CORS
+app.use(cors());
+
 // MongoDB connection
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/buildYourPC', {
   useNewUrlParser: true,
@@ -57,8 +65,6 @@ app.use('/', viewRoutes);
 const adminRoutes = require('./routes/adminroutes');
 app.use('/admin', adminRoutes);
 
-app.use(cors());
-
 // 404 Error Handler
 app.use((req, res) => {
   res.status(404).send('404: Page not found');
@@ -69,5 +75,4 @@ const PORT = process.env.PORT || 4000;
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}...`);
-
 });

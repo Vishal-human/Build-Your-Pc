@@ -74,6 +74,11 @@ const motherboardSchema = new mongoose.Schema({
     support_cpu: { //support cpu is the cpu that the motherboard supports 
         type: String,
         required: true
+    },
+
+    active: {
+        type: Boolean,
+        default: true
     }
 });
 

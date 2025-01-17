@@ -24,28 +24,29 @@ const cpuSchema = new mongoose.Schema({
         required: true,
         min: 1
     },
+
     threads: {
         type: Number,
         required: true,
         min: 1
     },
-    baseClockSpeed: {
+
+    frequency: {
         type: Number,
         required: true,
-        min: 0
-    },
-    boostClockSpeed: {
-        type: Number,
         min: 0
     },
     socket: {
         type: String,  //example: LGA 1700 or AM4 or AM5 or AM6 or AM7
         required: true
     },
-    tdp: {
-        type: Number,
-        min: 0
+
+    productImage: {
+        type: String,
+        required: true
     },
+
+
     price: {
         type: Number,
         min: 0
@@ -54,5 +55,9 @@ const cpuSchema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
+    active: {
+        type: Boolean,
+        default: true
+    }
 });
 module.exports = mongoose.model('CPU', cpuSchema);

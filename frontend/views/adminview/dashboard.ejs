@@ -4,144 +4,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Admin Dashboard - BuildYourPC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-
-        .dashboard-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .stat-card h3 {
-            margin: 0 0 10px 0;
-            color: #333;
-        }
-
-        .stat-card p {
-            margin: 0;
-            font-size: 24px;
-            font-weight: bold;
-            color: #007bff;
-        }
-
-        .logout-btn {
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .logout-btn:hover {
-            background-color: #c82333;
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
         }
     </style>
 </head>
 
 <body>
-    <div class="dashboard-container">
-        <div class="header">
-            <h1>Admin Dashboard</h1>
-            <button class="logout-btn" onclick="location.href='/admin/login'">Logout</button>
+    <div class="min-h-screen flex">
+        <!-- Sidebar -->
+        <div class="w-64 bg-slate-800 text-white p-4">
+            <div class="mb-8">
+                <h1 class="text-2xl font-bold">Admin Dashboard</h1>
+            </div>
+            <nav>
+                <ul class="space-y-2">
+                    <li>
+                        <a href="#profile" class="block p-3 rounded hover:bg-slate-700">
+                            <span>Profile Management</span>
+                        </a>
+                    </li>
+                    <!-- <li>
+                        <a href="#categories" class="block p-3 rounded hover:bg-slate-700">
+                            <span>Category Management</span>
+                        </a>
+                    </li> -->
+                    <li>
+                        <a href="/admin/productManagement"
+                            class="block p-3 rounded hover:bg-slate-700 flex items-center justify-between">
+                            <span>Product Management</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#customers" class="block p-3 rounded hover:bg-slate-700">
+                            <span>Customer Management</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#orders" class="block p-3 rounded hover:bg-slate-700">
+                            <span>Order Management</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
         </div>
 
-        <div class="stats-grid">
-            <div class="stat-card">
-                <h3>Total Users</h3>
-                <p>
-                    <%= locals.totalUsers || 0 %>
-                </p>
-            </div>
+        <!-- Main Content -->
+        <div class="flex-1 p-8">
+            <!-- Profile Section -->
+            <section id="profile" class="mb-8">
+                <div class="bg-slate-800 rounded-lg p-6">
+                    <h2 class="text-2xl font-bold text-white mb-4">Profile Management</h2>
+                    <form class="space-y-4">
 
-            <div class="stat-card">
-                <h3>Total Orders</h3>
-                <p>
-                    <%= locals.totalOrders || 0 %>
-                </p>
-            </div>
+                        <div>
+                            <label class="block text-sm font-medium text-blue-200 mb-2">Admin Username</label>
+                            <input type="email" name="adminusername"
+                                class="w-full px-4 py-2 bg-slate-700 text-white rounded">
+                        </div>
 
-            <div class="stat-card">
-                <h3>Revenue</h3>
-                <p>₹<%= locals.totalRevenue || 0 %>
-                </p>
-            </div>
+                        <div>
+                            <label class="block text-sm font-medium text-blue-200 mb-2">New Password</label>
+                            <input type="password" class="w-full px-4 py-2 bg-slate-700 text-white rounded">
+                        </div>
+                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                            Update Profile
+                        </button>
+                    </form>
+                </div>
+            </section>
 
-            <div class="stat-card">
-                <h3>Active Users</h3>
-                <p>
-                    <%= locals.activeUsers || 0 %>
-                </p>
-            </div>
-        </div>
+            <!-- Categories Section -->
+            <!-- <section id="categories" class="mb-8">
+                <div class="bg-slate-800 rounded-lg p-6">
+                    <h2 class="text-2xl font-bold text-white mb-4">Category Management</h2>
+                    <div class="mb-4">
+                        <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                            Add New Category
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full text-white">
+                            <thead>
+                                <tr class="border-b border-slate-700">
+                                    <th class="px-4 py-2 text-left">Category Name</th>
+                                    <th class="px-4 py-2 text-left">Status</th>
+                                    <th class="px-4 py-2 text-left">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                             
+                                <tr class="border-b border-slate-700">
+                                    <td class="px-4 py-2">CPU</td>
+                                    <td class="px-4 py-2">Active</td>
+                                    <td class="px-4 py-2">
+                                        <button class="text-blue-400 hover:text-blue-300 mr-2">Edit</button>
+                                        <button class="text-red-400 hover:text-red-300">Deactivate</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+          </section> -->
 
-        <!-- Recent Orders Table -->
-        <div style="background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-            <h2>Recent Orders</h2>
-            <table style="width: 100%; border-collapse: collapse;">
-                <thead>
-                    <tr>
-                        <th style="text-align: left; padding: 12px; border-bottom: 2px solid #ddd;">Order ID</th>
-                        <th style="text-align: left; padding: 12px; border-bottom: 2px solid #ddd;">Customer</th>
-                        <th style="text-align: left; padding: 12px; border-bottom: 2px solid #ddd;">Amount</th>
-                        <th style="text-align: left; padding: 12px; border-bottom: 2px solid #ddd;">Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% if (locals.recentOrders && recentOrders.length> 0) { %>
-                        <% recentOrders.forEach(order=> { %>
-                            <tr>
-                                <td style="padding: 12px; border-bottom: 1px solid #ddd;">
-                                    <%= order.id %>
-                                </td>
-                                <td style="padding: 12px; border-bottom: 1px solid #ddd;">
-                                    <%= order.customer %>
-                                </td>
-                                <td style="padding: 12px; border-bottom: 1px solid #ddd;">₹<%= order.amount %>
-                                </td>
-                                <td style="padding: 12px; border-bottom: 1px solid #ddd;">
-                                    <%= order.status %>
-                                </td>
-                            </tr>
-                            <% }); %>
-                                <% } else { %>
-                                    <tr>
-                                        <td colspan="4" style="text-align: center; padding: 12px;">No recent orders</td>
-                                    </tr>
-                                    <% } %>
-                </tbody>
-            </table>
+            <!-- Customers Section -->
+            <section id="customers" class="mb-8">
+                <div class="bg-slate-800 rounded-lg p-6">
+                    <h2 class="text-2xl font-bold text-white mb-4">Customer Management</h2>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full text-white">
+                            <thead>
+                                <tr class="border-b border-slate-700">
+                                    <th class="px-4 py-2 text-left">Name</th>
+                                    <th class="px-4 py-2 text-left">Email</th>
+                                    <th class="px-4 py-2 text-left">Status</th>
+                                    <th class="px-4 py-2 text-left">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Sample row -->
+                                <tr class="border-b border-slate-700">
+                                    <td class="px-4 py-2">John Doe</td>
+                                    <td class="px-4 py-2">john@example.com</td>
+                                    <td class="px-4 py-2">Active</td>
+                                    <td class="px-4 py-2">
+                                        <button class="text-blue-400 hover:text-blue-300 mr-2">View</button>
+                                        <button class="text-red-400 hover:text-red-300">Deactivate</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Orders Section -->
+            <section id="orders">
+                <div class="bg-slate-800 rounded-lg p-6">
+                    <h2 class="text-2xl font-bold text-white mb-4">Order Management</h2>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full text-white">
+                            <thead>
+                                <tr class="border-b border-slate-700">
+                                    <th class="px-4 py-2 text-left">Order ID</th>
+                                    <th class="px-4 py-2 text-left">Customer</th>
+                                    <th class="px-4 py-2 text-left">Date</th>
+                                    <th class="px-4 py-2 text-left">Status</th>
+                                    <th class="px-4 py-2 text-left">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Sample row -->
+                                <tr class="border-b border-slate-700">
+                                    <td class="px-4 py-2">#12345</td>
+                                    <td class="px-4 py-2">John Doe</td>
+                                    <td class="px-4 py-2">2024-01-20</td>
+                                    <td class="px-4 py-2">Shipped</td>
+                                    <td class="px-4 py-2">
+                                        <button class="text-blue-400 hover:text-blue-300 mr-2">View Details</button>
+                                        <button class="text-green-400 hover:text-green-300">Update Status</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
         </div>
     </div>
 </body>
