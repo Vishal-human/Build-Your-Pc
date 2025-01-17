@@ -1,7 +1,15 @@
 # Build-Your-Pc
 
-## Project Files and Dependencies
 
+### To Run the project
+
+```
+  npm run dev
+
+```
+
+## Project Files and Dependencies
+```
 ### package-lock.json
 - Automatically generated file that locks package versions
 - Ensures consistent installations across environments
@@ -24,12 +32,15 @@
 - Should NOT be committed to version control
 - Can be regenerated using package.json
 
-# how we check the compability of componets
+```
 
 ## Component Compatibility Checking System
 
+```
 Our PC Builder implements a comprehensive compatibility checking system to ensure all selected components work together seamlessly:
 
+```
+```
 ### CPU & Motherboard Compatibility
 - Socket type matching between CPU and motherboard
 - Chipset compatibility verification
@@ -61,5 +72,6 @@ Our PC Builder implements a comprehensive compatibility checking system to ensur
 - Power connector requirements
 - Physical size constraints
 - Required PSU wattage verification
+```
 
 The system performs these checks in real-time as components are selected, providing immediate feedback to users about compatibility issues and ensuring a successful build.
