@@ -49,7 +49,7 @@ app.use(
 // Enable CORS
 app.use(cors());
 
-// MongoDB connection
+// MongoDB connection //mongoose is used to connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/buildYourPC', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
