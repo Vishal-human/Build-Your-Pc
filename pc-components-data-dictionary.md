@@ -1,21 +1,22 @@
 # --> not included
 
+
 # CPU Collection Data Dictionary  1] man ---> socket_type ----> 
 
-| Field Name | Data Type | Required | Description | string Value | Constraints |    i5 12gen LGA 1700 , X670 
-|------------|-----------|----------|-------------|---------------|-------------| 
-| model | string | Yes | CPU model name | "Ryzen 9 7950X" | Non-empty string | 
-| manufacturer | string | Yes | CPU manufacturer | "AMD" | Non-empty string |    <-----intel,amd  <---- new added 
-| socket | string | Yes | CPU socket type | "AM5" | Must be valid socket type | 
-| cores | integer | Yes | Number of CPU cores | 16 | Positive integer | 
-| threads | integer | No | Number of threads | 32 | Positive integer | 
-| baseSpeed | double | Yes | Base clock speed in GHz | 4.5 | Positive number | 
-| boostSpeed | double | No | Maximum boost clock in GHz | 5.7 | Greater than baseSpeed |  
-| compatibleChipsets | string  |  --------------> X670E", "X670", "B650E" 
-| generation |  string | 7      |  <----------- new added 
+| Field Name | Data Type | Required | Description | Example Value | Constraints |
+|------------|-----------|----------|-------------|---------------|-------------|
+| model | string | Yes | CPU model name | "Ryzen 9 7950X" | Non-empty string |
+| manufacturer | string | Yes | CPU manufacturer | "AMD" | Non-empty string |
+| socket | string | Yes | CPU socket type | "AM5" | Must be valid socket type |
+|socket_version | number | 1700|  <---------- 1900, 
+| cores | integer | Yes | Number of CPU cores | 16 | Positive integer |
+| threads | integer | No | Number of threads | 32 | Positive integer |
+| baseSpeed | double | Yes | Base clock speed in GHz | 4.5 | Positive number |
+| boostSpeed | double | No | Maximum boost clock in GHz | 5.7 | Greater than baseSpeed |
+| compatibleChipsets | string[] | Yes | Compatible motherboard chipsets | ["X670E", "X670", "B650E"] | Valid chipset array |
+| generation | string | Yes | CPU generation | "7" | Non-empty string |
 
 #| socket_type | string |  LGA  |  <-------- intel --> || LGA , PGA ,   amd --> ||AM5 , AM4, AM3    <------- new added 
-|socket_version | number | 1700|  <---------- 1900, 
 
 # Motherboards Collection Data Dictionary
 <!-- 
@@ -61,27 +62,13 @@ elif(intel){
 | socket | string | Yes | CPU socket type for compatibility | "AM5" | Must be valid socket type |
 | chipset | string | Yes | Motherboard chipset model | "B650" | Must be valid chipset |
 | formFactor | string | Yes | Physical size and layout standard | "ATX" | One of: ATX, Micro-ATX, Mini-ITX |
-
-#| memoryType | string | Yes | Type of RAM supported | "DDR5" | Must be valid memory type |
-
 | maxMemory | integer | Yes | Maximum supported RAM in GB | 128 | Positive integer |
 | memorySlots | integer | Yes | Number of RAM slots | 4 | Positive integer |
-#| pcieSlots | array | Yes | Array of PCIe slot configurations | [{"version": "PCIe 4.0", "size": "x16"}] | At least one slot required |
 | sataConnectors | integer | Yes | Number of SATA ports | 6 | Non-negative integer |
-#| m2Slots | integer | Yes | Number of M.2 slots | 3 | Non-negative integer |
-#| tdp | integer | Yes | Thermal Design Power in watts | 70 | Positive integer |
-
-| supported_processor | Array  | [{"6", "7"}] |
-| socket_type         | string | FCLGA1700    |
-
-
-#| socket_type | string |  LGA |   -------> for cpu
- socket_version | number | 1700   <-------- LGA , PGA , AM5 , AM4, AM3    <------new added  <----check  ---> for cpu
-
-
-| RAM_type | string | DDR4  |   --------------> DDR4,5        <-----------new added  <------- check 
-| NVME_SUPPORT | BOOL | TRUE/FALSE   
-
+| tdp | integer | Yes | Thermal Design Power in watts | 70 | Positive integer |
+| supported_processor | array | Yes | Supported CPU generations | ["6", "7"] | Array of strings |
+| ram_type | string | Yes | Type of RAM supported | "DDR4" | Must be valid RAM type |
+| nvme_support | boolean | Yes | Whether NVMe drives are supported | true | true/false |
 
 <!-- RAM -->
 <!-- 
@@ -157,14 +144,16 @@ else{
 
 
 # CASEing
-  { name: 'brand', label: 'Brand', type: 'text' },
-{ name: 'model', label: 'Model', type: 'text' },
-                { name: 'manufacturer', label: 'manufacturer', type: 'text' },
-                { name: 'size', label: 'Size', type: 'text' },
-                { name: 'color', label: 'Color', type: 'text' },
-                { name: 'image', label: 'Product Image', type: 'file' }
-                { name: 'price', label: 'price', type: 'number' },
-                { name: 'stock', label: 'stock', type: 'number' },
+| Field Name | Data Type | Required | Description | Example Value | Constraints |
+|------------|-----------|----------|-------------|---------------|-------------|
+| brand | string | Yes | Case brand name | "NZXT" | Non-empty string |
+| model | string | Yes | Case model name | "H510" | Non-empty string |
+| manufacturer | string | Yes | Case manufacturer | "NZXT" | Non-empty string |
+| size | string | Yes | Case form factor | "Mid Tower" | Valid case size |
+| color | string | Yes | Case color | "Matte Black" | Non-empty string |
+| image | file | Yes | Product image file | "h510.jpg" | Valid image file |
+| price | number | Yes | Case price | 89.99 | Positive number |
+| stock | integer | Yes | Available quantity | 25 | Non-negative integer |
 
 
 
