@@ -15,8 +15,7 @@
 | boostSpeed | double | No | Maximum boost clock in GHz | 5.7 | Greater than baseSpeed |
 | compatibleChipsets | string[] | Yes | Compatible motherboard chipsets | ["X670E", "X670", "B650E"] | Valid chipset array |
 | generation | string | Yes | CPU generation | "7" | Non-empty string |
-
-#| socket_type | string |  LGA  |  <-------- intel --> || LGA , PGA ,   amd --> ||AM5 , AM4, AM3    <------- new added 
+#| socket_type | string |  LGA  |  <-------- intel --> || LGA , PGA ,   amd --> ||AM5 , AM4, AM3    <------- new added
 
 # Motherboards Collection Data Dictionary
 <!-- 

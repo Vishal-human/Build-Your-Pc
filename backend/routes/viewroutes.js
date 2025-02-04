@@ -4,69 +4,15 @@ const User = require('../models/User'); // Import the User model
 const Checkout = require('../models/checkout'); // Import the Checkout model
 const { encryptPassword, comparePassword } = require('../middleware/passwordMiddleware'); // Import password middleware
 const { isAuthenticated } = require('../middleware/sessionMiddleware');
+const authController = require('../controllers/AuthController');
 // Route: Home
 router.get('/', (_, res) => {
-  res.render('index', { title: 'Home - Build Your PC' });
-
+  res.render('Home');
 });
 
-// Route: Login Page
-router.get('/login', (_, res) => {
-  res.render('login', {
-    email: '',
-    title: 'Login - Build Your PC',
-    signupUrl: '/signup',
-    loginAction: '/login',
-    siteName: 'BuildYourPC',
-    action: '/login',
-    error: '',
-    imageUrl: 'https://images.unsplash.com/photo-1628269989095-ef8569497706?q=80&w=1528&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  });
-});
+router.get('/login', authController.getLoginPage);
 
-// Route: Login (POST)
-router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-
-  try {
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).render('login', {
-        email,
-        title: 'Login - Build Your PC',
-        signupUrl: '/signup',
-        loginAction: '/login',
-        siteName: 'BuildYourPC',
-        action: '/login',
-        imageUrl: 'https://images.unsplash.com/photo-1628269989095-ef8569497706?q=80&w=1528&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        error: 'User not found.',
-      });
-
-    }
-
-    const isMatch = await comparePassword(password, user.password);
-    if (!isMatch) {
-      return res.status(400).render('login', {
-        email,
-        title: 'Login - Build Your PC',
-        signupUrl: '/signup',
-        loginAction: '/login',
-        siteName: 'BuildYourPC',
-        action: '/login',
-        imageUrl: 'https://images.unsplash.com/photo-1628269989095-ef8569497706?q=80&w=1528&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        error: 'Invalid password',
-      });
-    }
-
-    // Store user information in session
-    req.session.user = { id: user._id, email: user.email };
-    console.log(req.session.user.id);
-    res.redirect('/assemble');
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error logging in.');
-  }
-});
+router.post('/login', authController.login);
 
 // Route: Sign Up Page
 router.get('/signup', (_, res) => {
@@ -178,6 +124,9 @@ router.post('/checkout', isAuthenticated, (req, res) => {
 router.get('/assemble', isAuthenticated, (_, res) => {
   res.render('assemble', { title: 'Assemble Your PC' });
 });
+
+
+
 
 
 module.exports = router;

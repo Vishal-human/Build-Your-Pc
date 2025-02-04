@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BuildYourPC - Custom PC Builder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            min-height: 100vh;
+        }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(15, 23, 42, 0.9) 100%);
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .slider {
+            position: relative;
+            overflow: hidden;
+            height: 400px;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <%- include('../partials/navbar.ejs') %>
+
+        <!-- Image Slider -->
+        <div class="slider w-full max-w-7xl mx-auto mb-12 rounded-xl overflow-hidden">
+            <div class="slide active">
+                <img src="https://i.pinimg.com/1200x/3d/63/7d/3d637dd6a48fc5ff363ebf9a2d48bc02.jpg"
+                    class="w-full h-full object-cover" />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent">
+                    <div class="absolute bottom-8 left-8 text-white">
+                        <h3 class="text-2xl font-bold">Ultimate Gaming PC</h3>
+                        <p class="text-blue-200">RTX 4090 | i9-13900K | 64GB RAM</p>
+                    </div>
+                </div>
+            </div>
+            <div class="slide">
+                <img src="https://images.unsplash.com/photo-1600348712270-5af9e3590f66"
+                    class="w-full h-full object-cover" />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent">
+                    <div class="absolute bottom-8 left-8 text-white">
+                        <h3 class="text-2xl font-bold">Proffisional PC</h3>
+                        <p class="text-blue-200">RTX 4080 | Ryzen 9 7950X | 32GB RAM</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hero Section -->
+        <div class="relative overflow-hidden">
+            <div class="hero-gradient absolute inset-0"></div>
+            <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+                <div class="text-center">
+                    <h1 class="text-5xl md:text-6xl font-bold text-white mb-6">
+                        Build Your Dream PC
+                    </h1>
+                    <p class="text-xl text-blue-200 mb-12 max-w-2xl mx-auto">
+                        Create the perfect custom PC with our advanced builder tool.
+                        Select premium components and bring your vision to life.
+                    </p>
+                    <div class="flex justify-center gap-6 mb-16">
+                        <a href="/assemble"
+                            class="inline-flex items-center px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white text-lg font-semibold rounded-xl transition duration-300 transform hover:scale-105 shadow-lg hover:shadow-blue-500/50">
+                            Let's Build PC
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 ml-2" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                            </svg>
+                        </a>
+                    </div>
+
+                    <!-- Featured Components Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                        <div class="glass-card rounded-2xl p-6 transform transition duration-300 hover:scale-105">
+                            <img src="../../assests/pc-selection.jpg" alt="Easy PC Configuration"
+                                class="rounded-lg mb-4 w-full" />
+                            <h3 class="text-xl font-semibold text-white mb-2">Easy Selection</h3>
+                            <p class="text-blue-200">Simple step-by-step component selection with compatibility checking
+                            </p>
+                            <div class="mt-4 flex flex-wrap gap-2">
+                                <span class="px-3 py-1 bg-blue-900/50 rounded-full text-blue-200 text-sm">Guided
+                                    Process</span>
+                                <span
+                                    class="px-3 py-1 bg-blue-900/50 rounded-full text-blue-200 text-sm">Auto-Compatible</span>
+                            </div>
+                        </div>
+
+                        <div class="glass-card rounded-2xl p-6 transform transition duration-300 hover:scale-105">
+                            <img src="https://img.freepik.com/free-photo/front-view-man-troubleshooting-computer_23-2148419157.jpg?t=st=1738407142~exp=1738410742~hmac=2c2269907c17a9c875627f42ef41eff71872878a00c7135294ad63be06fd35d1&w=740"
+                                alt="Professional Assembly" class="rounded-lg mb-4 w-full" />
+                            <h3 class="text-xl font-semibold text-white mb-2">Expert Assembly</h3>
+                            <p class="text-blue-200">Professional building service with quality assurance testing</p>
+                            <div class="mt-4 flex flex-wrap gap-2">
+                                <span class="px-3 py-1 bg-blue-900/50 rounded-full text-blue-200 text-sm">Professional
+                                    Build</span>
+                                <span class="px-3 py-1 bg-blue-900/50 rounded-full text-blue-200 text-sm">Quality
+                                    Tested</span>
+                            </div>
+                        </div>
+
+                        <div class="glass-card rounded-2xl p-6 transform transition duration-300 hover:scale-105">
+                            <img src="https://i.pinimg.com/736x/c9/d2/11/c9d2118a506a3b0a2e7668f389fa7794.jpg"
+                                alt="Home Delivery" class="rounded-lg mb-4 w-full" />
+                            <h3 class="text-xl font-semibold text-white mb-2">Home Delivery</h3>
+                            <p class="text-blue-200">Secure packaging and delivery of your custom PC to your doorstep
+                            </p>
+                            <div class="mt-4 flex flex-wrap gap-2">
+                                <span class="px-3 py-1 bg-blue-900/50 rounded-full text-blue-200 text-sm">Safe
+                                    Shipping</span>
+                                <span class="px-3 py-1 bg-blue-900/50 rounded-full text-blue-200 text-sm">Track
+                                    Order status</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <%- include('../partials/footer.ejs') %>
+
+            <script>
+                // Image slider functionality
+                let currentSlide = 0;
+                const slides = document.querySelectorAll('.slide');
+
+                function showSlide(index) {
+                    slides.forEach(slide => slide.classList.remove('active'));
+                    slides[index].classList.add('active');
+                }
+
+                function nextSlide() {
+                    currentSlide = (currentSlide + 1) % slides.length;
+                    showSlide(currentSlide);
+                }
+
+                // Change slide every 3 seconds
+                setInterval(nextSlide, 3000);
+            </script>
+</body>
+
+</html>
