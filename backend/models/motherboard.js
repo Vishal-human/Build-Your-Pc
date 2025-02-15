@@ -22,9 +22,7 @@ const motherboardSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    memorySlots: {
-        type: Number,
-    },
+
     maxMemory: {
         type: Number,
         required: true
