@@ -48,6 +48,8 @@ router.get('/dashboard', (req, res) => { //middleware to check if the admin is a
 router.get('/productmanagement', (req, res) => {
     //middleware to check if the admin is authenticated if the admin is login than he can access the dashboard
     res.render('Productmanagement');
+
 });
+
 
 module.exports = router;

@@ -12,6 +12,24 @@
             font-family: 'Inter', sans-serif;
             background-color: #0f172a;
         }
+
+        .modal-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .modal-scroll::-webkit-scrollbar-track {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+
+        .modal-scroll::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 4px;
+        }
+
+        .modal-scroll::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
     </style>
 </head>
 
@@ -21,16 +39,17 @@
         <div class="mb-6">
             <select id="categorySelect" onchange="filterProducts()" class="bg-slate-700 text-white px-4 py-2 rounded">
                 <option value="all">All Categories</option>
-                <option value="cpu">CPU</option>
-                <option value="gpu">GPU</option>
-                <option value="ram">RAM</option>
+                <option value="CPU">CPU</option>
+                <option value="GPU">GPU</option>
+                <option value="RAM">RAM</option>
                 <option value="motherboard">Motherboard</option>
                 <option value="storage">Storage</option>
-                <option value="psu">Power Supply</option>
-                <option value="case">Case</option>
+                <option value="PSU">Power Supply</option>
+                <option value="Cabinet">Case</option>
             </select>
         </div>
 
+        <!-- Product List -->
         <div class="bg-slate-800 rounded-lg p-6">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-bold text-white">Product Management</h2>
@@ -40,7 +59,7 @@
                 </button>
             </div>
 
-            <!-- Product List Table -->
+            <!-- Product Table -->
             <div class="overflow-x-auto">
                 <table class="min-w-full text-white">
                     <thead>
@@ -54,117 +73,192 @@
                         </tr>
                     </thead>
                     <tbody id="productTableBody">
-                        <!-- Products will be dynamically loaded here -->
+                        <!-- Products will be loaded here -->
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Dynamic Product Form Modal -->
-        <div id="productFormModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div class="bg-slate-800 p-6 rounded-lg w-full max-w-md">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 id="formTitle" class="text-xl font-bold text-white">Add/Edit Product</h3>
-                    <button onclick="hideProductForm()" class="text-slate-400 hover:text-white">&times;</button>
+        <!-- Product Form Modal -->
+        <div id="productFormModal"
+            class="hidden fixed inset-0 bg-black bg-opacity-50 items-center justify-center p-4" 
+            style="display: none;">
+            <div class="bg-slate-800 rounded-lg w-full max-w-2xl max-h-[90vh] flex flex-col">
+                <!-- Modal Header -->
+                <div class="p-6 border-b border-slate-700">
+                    <div class="flex justify-between items-center">
+                        <h3 id="formTitle" class="text-xl font-bold text-white">Add/Edit Product</h3>
+                        <button onclick="hideProductForm()"
+                            class="text-slate-400 hover:text-white text-2xl">&times;</button>
+                    </div>
                 </div>
-                <form id="productForm" class="space-y-4" onsubmit="handleSubmit(event)">
-                    <div>
-                        <label class="block text-sm font-medium text-blue-200 mb-2">Category</label>
-                        <select id="productCategory" onchange="updateFormFields()"
-                            class="w-full px-4 py-2 bg-slate-700 text-white rounded">
-                            <option value="cpu">CPU</option>
-                            <option value="gpu">GPU</option>
-                            <option value="ram">RAM</option>
-                            <option value="motherboard">Motherboard</option>
-                            <option value="storage">Storage</option>
-                            <option value="psu">Power Supply</option>
-                            <option value="case">Case</option>
-                        </select>
-                    </div>
 
-                    <div id="dynamicFields">
-                        <!-- Dynamic fields will be inserted here based on category -->
-                    </div>
+                <!-- Modal Body -->
+                <div class="flex-1 overflow-y-auto modal-scroll p-6">
+                    <form id="productForm" class="space-y-4" onsubmit="">
+                        <div>
+                            <label class="block text-sm font-medium text-blue-200 mb-2">Category</label>
+                            <select id="productCategory" onchange="updateFormFields()"
+                                class="w-full px-4 py-2 bg-slate-700 text-white rounded">
+                                <option value="CPU">CPU</option>
+                                <option value="motherboard">Motherboard</option>
+                                <option value="RAM">RAM</option>
+                                <option value="storage">Storage</option>
+                                <option value="GPU">GPU</option>
+                                <option value="PSU">Power Supply</option>
+                                <option value="CPUCooler">CPU Cooler</option>
+                                <option value="Cabinet">Cabinet</option>
+                            </select>
+                        </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-blue-200 mb-2">Price ($)</label>
-                        <input type="number" name="price" step="0.01"
-                            class="w-full px-4 py-2 bg-slate-700 text-white rounded" required>
-                    </div>
+                        <div id="dynamicFields" class="space-y-4">
+                            <!-- Dynamic fields will be inserted here -->
+                        </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-blue-200 mb-2">Stock</label>
-                        <input type="number" name="stock" class="w-full px-4 py-2 bg-slate-700 text-white rounded"
-                            required>
-                    </div>
+                        <div>
+                            <label class="block text-sm font-medium text-blue-200 mb-2">Price ($)</label>
+                            <input type="number" name="price" step="0.01"
+                                class="w-full px-4 py-2 bg-slate-700 text-white rounded" required>
+                        </div>
 
-                    <button type="submit" name="submit"
+                        <div>
+                            <label class="block text-sm font-medium text-blue-200 mb-2">Stock</label>
+                            <input type="number" name="stock" class="w-full px-4 py-2 bg-slate-700 text-white rounded"
+                                required>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="p-6 border-t border-slate-700">
+                    <button type="submit" form="productForm"
                         class="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
                         Save Product
                     </button>
-                </form>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
+        // Category fields configuration
         const categoryFields = {
-            cpu: [
-                { name: 'model', label: 'Model', type: 'text', required: true },
-                { name: 'manufacturer', label: 'Manufacturer', type: 'select', options: ['AMD', 'Intel'], required: true },
-                { name: 'socket', label: 'Socket', type: 'select', options: ['AM5', 'AM4', 'AM3', 'LGA', 'PGA'], required: true },
-                { name: 'cores', label: 'Cores', type: 'number', required: true },
-                { name: 'generation', label: 'Generation', type: 'select', options: ['7', '8', '9', '10', '11', '12', '13', '14', '15', '16'], required: true },
-                { name: 'frequency', label: 'Frequency (GHz)', type: 'number', required: true },
-                { name: 'image', label: 'Product Image', type: 'file', required: true }
-            ],
+            CPU: [
+                { name: 'brand', label: 'Brand', type: 'text' },
+                { name: 'model', label: 'Model', type: 'text' },
+                { name: 'manufacturer', label: 'Manufacturer', type: 'text' },
+                { name: 'frequency', label: 'Frequency (GHz)', type: 'number' },
+                { name: 'cores', label: 'Cores', type: 'number' },
+                { name: 'generation', label: 'Generation', type: 'number' },
+                { name: 'socket', label: 'Socket', type: 'text' },
+                { name: 'chipset', label: 'Chipset', type: 'text' },
+                { name: 'basespeed', label: 'Base Speed', type: 'number' },
+                { name: 'boostspeed', label: 'Boost Speed', type: 'number' },
+                { name: 'tdp', label: 'TDP', type: 'number' },
+                { name: 'image', label: 'Product Image', type: 'file' },
 
+
+            ],
             motherboard: [
-                { name: 'model', label: 'Model', type: 'text', required: true },
-                { name: 'manufacturer', label: 'Manufacturer', type: 'text', required: true },
-                { name: 'socket', label: 'Socket', type: 'select', options: ['AM5', 'AM4', 'AM3', 'LGA', 'PGA'], required: true },
-                { name: 'chipset', label: 'Chipset', type: 'text', required: true },
-                { name: 'image', label: 'Product Image', type: 'file', required: true }
+                { name: 'brand', label: 'Brand', type: 'text' },
+                { name: 'model', label: 'Model', type: 'text' },
+                { name: 'manufacturer', label: 'Manufacturer', type: 'text' },
+                { name: 'socket', label: 'Socket', type: 'text' },
+                { name: 'chipset', label: 'Chipset', type: 'text' },
+                { name: 'formFactor', label: 'Form Factor', type: 'text' },
+                { name: 'maxMemory', label: 'Max Memory', type: 'number' },
+                { name: 'tdp', label: 'TDP', type: 'number' },
+                { name: 'supportedProcessor', label: 'Supported Processor', type: 'array' },
+                { name: 'ramSlots', label: 'RAM Slots', type: 'number' },
+                { name: 'ramType', label: 'RAM Type', type: 'text' },
+                { name: 'nvmeSupport', label: 'NVMe Support', type: 'boolean' },
+                { name: 'pcieVersion', label: 'PCIe Version', type: 'text' },
+                { name: 'image', label: 'Product Image', type: 'file' }
             ],
 
-            gpu: [
-                { name: 'brand', label: 'Brand', type: 'text', required: true },
-                { name: 'model', label: 'Model', type: 'text', required: true },
-                { name: 'vram', label: 'VRAM (GB)', type: 'number', required: true },
-                { name: 'clockSpeed', label: 'Clock Speed (MHz)', type: 'number', required: true },
-                { name: 'image', label: 'Product Image', type: 'file', required: true }
-            ],
-            ram: [
-                { name: 'brand', label: 'Brand', type: 'text', required: true },
-                { name: 'model', label: 'Model', type: 'text', required: true },
-                { name: 'speed', label: 'Speed (MHz)', type: 'number', required: true },
-                { name: 'capacity', label: 'Capacity (GB)', type: 'number', required: true },
-                { name: 'image', label: 'Product Image', type: 'file', required: true }
+            RAM: [
+                { name: 'brand', label: 'Brand', type: 'text' },
+                { name: 'model', label: 'Model', type: 'text' },
+                { name: 'manufacturer', label: 'Manufacturer', type: 'text' },
+                { name: 'ramType', label: 'RAM Type', type: 'text' },
+                { name: 'ramCapacity', label: 'RAM Capacity', type: 'text' },
+                { name: 'speed', label: 'Speed (MHz)', type: 'number' },
+                { name: 'voltage', label: 'Voltage', type: 'number' },
+                { name: 'image', label: 'Product Image', type: 'file' },
             ],
 
-            case: [
-                { name: 'brand', label: 'Brand', type: 'text', required: true },
-                { name: 'model', label: 'Model', type: 'text', required: true },
-                { name: 'size', label: 'Size', type: 'text', required: true },
-                { name: 'color', label: 'Color', type: 'text', required: true },
-                { name: 'image', label: 'Product Image', type: 'file', required: true }
-            ],
             storage: [
-                { name: 'brand', label: 'Brand', type: 'text', required: true },
-                { name: 'model', label: 'Model', type: 'text', required: true },
-                { name: 'capacity', label: 'Capacity (GB)', type: 'number', required: true },
-                { name: 'type', label: 'Type', type: 'select', options: ['SSD', 'HDD', 'NVMe'], required: true },
-                { name: 'image', label: 'Product Image', type: 'file', required: true }
+                { name: 'brand', label: 'Brand', type: 'text' },
+                { name: 'model', label: 'Model', type: 'text' },
+                { name: 'manufacturer', label: 'Manufacturer', type: 'text' },
+                { name: 'capacity', label: 'Capacity (GB)', type: 'number' },
+                { name: 'type', label: 'Type', type: 'text' },
+                { name: 'nvmeSupport', label: 'NVMe Support', type: 'boolean' },
+                { name: 'readSpeed', label: 'Read Speed (MB/s)', type: 'number' },
+                { name: 'writeSpeed', label: 'Write Speed (MB/s)', type: 'number' },
+                { name: 'voltage', label: 'Voltage', type: 'number' },
+                { name: 'image', label: 'Product Image', type: 'file' },
+
             ],
-            psu: [
-                { name: 'brand', label: 'Brand', type: 'text', required: true },
-                { name: 'model', label: 'Model', type: 'text', required: true },
-                { name: 'wattage', label: 'Wattage (W)', type: 'number', required: true },
-                { name: 'efficiency', label: 'Efficiency', type: 'select', options: ['80+ Bronze', '80+ Silver', '80+ Gold', '80+ Platinum'], required: true },
-                { name: 'image', label: 'Product Image', type: 'file', required: true }
-            ]
+
+            GPU: [
+                { name: 'brand', label: 'Brand', type: 'text' },
+                { name: 'model', label: 'Model', type: 'text' },
+                { name: 'manufacturer', label: 'Manufacturer', type: 'text' },
+                { name: 'chipset', label: 'Chipset', type: 'text' },
+                { name: 'memory', label: 'Memory (GB)', type: 'number' },
+                { name: 'memoryType', label: 'Memory Type', type: 'text' },
+                { name: 'clockSpeed', label: 'Clock Speed (MHz)', type: 'number' },
+                { name: 'pcieVersion', label: 'PCIe Version', type: 'text' },
+                { name: 'tdp', label: 'TDP (W)', type: 'number' },
+                { name: 'length', label: 'Length (mm)', type: 'number' },
+                { name: 'image', label: 'Product Image', type: 'file' },
+
+            ],
+
+            PSU: [
+                { name: 'brand', label: 'Brand', type: 'text' },
+                { name: 'model', label: 'Model', type: 'text' },
+                { name: 'manufacturer', label: 'Manufacturer', type: 'text' },
+                { name: 'wattage', label: 'Wattage (W)', type: 'number' },
+                { name: 'efficiency', label: 'Efficiency Rating', type: 'text' },
+                { name: 'formFactor', label: 'Form Factor', type: 'text' },
+                { name: 'image', label: 'Product Image', type: 'file' },
+
+            ],
+
+            CPUCooler: [
+                { name: 'brand', label: 'Brand', type: 'text' },
+                { name: 'model', label: 'Model', type: 'text' },
+                { name: 'manufacturer', label: 'Manufacturer', type: 'text' },
+                { name: 'socket', label: 'Socket', type: 'text' },
+                { name: 'tdp', label: 'TDP (W)', type: 'number' },
+                { name: 'cpuType', label: 'CPU Type', type: 'array' },
+                { name: 'coolingType', label: 'Cooling Type', type: 'text' },
+                { name: 'rpm', label: 'RPM', type: 'number' },
+                { name: 'liquid', label: 'Liquid Cooling', type: 'boolean' },
+                { name: 'image', label: 'Product Image', type: 'file' },
+
+            ],
+            Cabinet: [
+                { name: 'brand', label: 'Brand', type: 'text' },
+                { name: 'model', label: 'Model', type: 'text' },
+                { name: 'manufacturer', label: 'Manufacturer', type: 'text' },
+                { name: 'size', label: 'Size', type: 'text' },
+                { name: 'color', label: 'Color Options', type: 'array' },
+                { name: 'sidePanel', label: 'Side Panel Type', type: 'text' },
+                { name: 'motherboardFormFactor', label: 'Motherboard Form Factor', type: 'array' },
+                { name: 'dimensions', label: 'Dimensions (mm)', type: 'object' },
+                { name: 'volume', label: 'Volume (L)', type: 'number' },
+                { name: 'usbSlots', label: 'USB Slots', type: 'object' },
+                { name: 'image', label: 'Product Image', type: 'file' },
+
+            ],
+
+
         };
 
+        // Function to update form fields based on category
         function updateFormFields() {
             const category = document.getElementById('productCategory').value;
             const dynamicFields = document.getElementById('dynamicFields');
@@ -172,131 +266,188 @@
 
             const fields = categoryFields[category] || [];
             fields.forEach(field => {
-                let fieldHtml = `
-                    <div>
-                        <label class="block text-sm font-medium text-blue-200 mb-2">${field.label}</label>`;
-
-                if (field.type === 'select') {
-                    fieldHtml += `
-                        <select name="${field.name}" class="w-full px-4 py-2 bg-slate-700 text-white rounded" ${field.required ? 'required' : ''}>
-                            ${field.options.map(option => `<option value="${option}">${option}</option>`).join('')}
-                        </select>`;
+                let fieldHtml;
+                if (field.type === 'file') {
+                    fieldHtml = `
+                        <div>
+                            <label class="block text-sm font-medium text-blue-200 mb-2">${field.label}</label>
+                            <input type="${field.type}" name="${field.name}" accept="image/*"
+                                class="w-full px-4 py-2 bg-slate-700 text-white rounded file:mr-4 file:py-2 file:px-4
+                                file:rounded-full file:border-0 file:text-sm file:font-semibold
+                                file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                        </div>
+                    `;
                 } else {
-                    fieldHtml += `
-                        <input type="${field.type}" name="${field.name}" class="w-full px-4 py-2 bg-slate-700 text-white rounded" ${field.required ? 'required' : ''}>`;
+                    fieldHtml = `
+                        <div>
+                            <label class="block text-sm font-medium text-blue-200 mb-2">${field.label}</label>
+                            <input type="${field.type}" name="${field.name}" 
+                                class="w-full px-4 py-2 bg-slate-700 text-white rounded">
+                        </div>
+                    `;
                 }
-
-                fieldHtml += `</div>`;
                 dynamicFields.insertAdjacentHTML('beforeend', fieldHtml);
             });
         }
 
+
+
+        // Function to filter products
+        function filterProducts() {
+            const category = document.getElementById('categorySelect').value;
+            const rows = document.querySelectorAll('#productTableBody tr');
+
+            rows.forEach(row => {
+                if (category === 'all' || row.dataset.category === category) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // Function to show add product form
         function showAddProductForm() {
-            document.getElementById('productFormModal').classList.remove('hidden');
+            const modal = document.getElementById('productFormModal');
+            console.log('Showing modal, current classes:', modal.classList);
+            modal.style.display = 'flex';
+            modal.classList.remove('hidden');
             document.getElementById('formTitle').textContent = 'Add New Product';
             document.getElementById('productForm').reset();
             updateFormFields();
         }
 
+        // Function to hide product form
         function hideProductForm() {
-            document.getElementById('productFormModal').classList.add('hidden');
+            const modal = document.getElementById('productFormModal');
+            modal.style.display = 'none';
+            modal.classList.add('hidden');
         }
 
-        function filterProducts() {
-            const category = document.getElementById('categorySelect').value;
-            const products = document.querySelectorAll('#productTableBody tr');
 
-            products.forEach(product => {
-                if (category === 'all' || product.dataset.category === category) {
-                    product.style.display = '';
+        // Add event listener to form
+        document.getElementById('productForm').addEventListener('submit', handleSubmit);
+
+        // Function to toggle product status
+        function toggleProductStatus(productId) {
+            const product = products.find(p => p.id === productId);
+            if (product) {
+                product.active = !product.active;
+                loadProducts();
+            }
+        }
+
+        // Function to edit product
+        function editProduct(productId) {
+            const product = products.find(p => p.id === productId);
+            if (product) {
+                document.getElementById('formTitle').textContent = 'Edit Product';
+                document.getElementById('productCategory').value = product.category;
+                updateFormFields();
+
+                // Fill form with product data
+                Object.keys(product).forEach(key => {
+                    const input = document.querySelector(`[name = "${key}"]`);
+                    if (input) input.value = product[key];
+                });
+
+                showAddProductForm();
+            }
+        }
+
+        // Function to fetch products from database
+        async function fetchProductsFromDatabase() {
+            try {
+                const response = await fetch('/api/products');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const products = await response.json();
+                return products;
+            } catch (error) {
+                console.error('Error fetching products:', error);
+                return [];
+            }
+
+
+            
+        }
+
+        // Function to load products from database
+        async function loadProducts() {
+            try {
+                const fetchedProducts = await fetchProductsFromDatabase();
+                products = fetchedProducts; // Update global products array
+                displayProducts(); // Update the UI with fetched products
+            } catch (error) {
+                console.error('Error loading products:', error);
+                alert('Failed to load products. Please try again.');
+            }
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProducts();
+            updateFormFields();
+        });
+
+        async function handleSubmit(event) {
+            event.preventDefault();
+            
+            const form = event.target;
+            const formData = new FormData(form);
+            const category = document.getElementById('productCategory').value;
+            
+            // Get the file input
+            const imageFile = formData.get('image');
+            
+            // Create a temporary URL for the image
+            const productImage = imageFile ? URL.createObjectURL(imageFile) : '';
+            
+            // Create an object from form data and convert number fields
+            const productData = {};
+            formData.forEach((value, key) => {
+                if (key === 'image') {
+                    // Skip the file input as we're handling it separately
+                    return;
+                }
+                // Convert number fields to numbers
+                if (['cores', 'frequency', 'basespeed', 'boostspeed', 'tdp', 'price'].includes(key)) {
+                    productData[key] = Number(value);
                 } else {
-                    product.style.display = 'none';
+                    productData[key] = value;
                 }
             });
-        }
 
-        function handleSubmit(event) {
-            event.preventDefault();
-            const formData = new FormData(event.target);
-            // Send formData to server using fetch
-            fetch('/api/products', {
-                method: 'POST',
-                body: formData
-            })
-                .then(response => response.json())
-                .then(data => {
+            // Add the image URL to the product data
+            productData.productImage = productImage || 'default-image-url.jpg';
+
+            console.log('Submitting product data:', productData); // Debug log
+
+            try {
+                const response = await fetch(`/api/${category.toLowerCase()}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(productData)
+                });
+
+                const result = await response.json();
+                console.log('Server response:', result); // Debug log
+                
+                if (result.success) {
+                    alert('Product added successfully!');
                     hideProductForm();
-                    loadProducts(); // Refresh product list
-                })
-                .catch(error => console.error('Error:', error));
+                    loadProducts();
+                } else {
+                    alert(result.message || 'Failed to add product');
+                }
+            } catch (error) {
+                console.error('Error submitting product:', error);
+                alert('Failed to submit product. Please try again.');
+            }
         }
-
-        function toggleProductStatus(productId) {
-            fetch(`/api/products/${productId}/toggle-status`, {
-                method: 'PUT'
-            })
-                .then(response => response.json())
-                .then(data => {
-                    loadProducts(); // Refresh product list
-                })
-                .catch(error => console.error('Error:', error));
-        }
-
-        function editProduct(productId) {
-            fetch(`/api/products/${productId}`)
-                .then(response => response.json())
-                .then(product => {
-                    document.getElementById('formTitle').textContent = 'Edit Product';
-                    document.getElementById('productCategory').value = product.category;
-                    updateFormFields();
-                    // Fill form with product data
-                    Object.keys(product).forEach(key => {
-                        const input = document.querySelector(`[name="${key}"]`);
-                        if (input) input.value = product[key];
-                    });
-                    showAddProductForm();
-                });
-        }
-
-        function loadProducts() {
-            fetch('/api/products')
-                .then(response => response.json())
-                .then(products => {
-                    const tbody = document.getElementById('productTableBody');
-                    tbody.innerHTML = '';
-                    products.forEach(product => {
-                        const row = `
-                        <tr data-category="${product.category}" class="border-b border-slate-700">
-                            <td class="px-4 py-2">${product.model || product.brand}</td>
-                            <td class="px-4 py-2">${product.category}</td>
-                            <td class="px-4 py-2">$${product.price}</td>
-                            <td class="px-4 py-2">${product.stock}</td>
-                            <td class="px-4 py-2">
-                                <span class="px-2 py-1 rounded ${product.active ? 'bg-green-600' : 'bg-red-600'}">
-                                    ${product.active ? 'Active' : 'Inactive'}
-                                </span>
-                            </td>
-                            <td class="px-4 py-2">
-                                <button onclick="editProduct('${product._id}')" class="bg-blue-600 text-white px-2 py-1 rounded mr-2">
-                                    Edit
-                                </button>
-                                <button onclick="toggleProductStatus('${product._id}')" 
-                                    class="px-2 py-1 rounded ${product.active ? 'bg-red-600' : 'bg-green-600'}">
-                                    ${product.active ? 'Deactivate' : 'Activate'}
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                        tbody.insertAdjacentHTML('beforeend', row);
-                    });
-                });
-        }
-
-        // Initialize form fields and load products on page load
-        document.addEventListener('DOMContentLoaded', () => {
-            updateFormFields();
-            loadProducts();
-        });
     </script>
 </body>
 

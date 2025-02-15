@@ -6,12 +6,10 @@ const bodyParser = require('body-parser');
 const ejs = require('ejs');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
-const MongoStore = require('connect-mongo'); // Use MongoDB session store
-const cors = require('cors'); // Enable CORS it 
+const MongoStore = require('connect-mongo');
+const cors = require('cors');
 
-// Load environment variables
 dotenv.config();
-
 const app = express();
 
 // Middleware setup
@@ -20,16 +18,17 @@ app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Set up multiple view paths
+// View engine setup
 app.set('view engine', 'ejs');
 app.set('views', [
   path.join(__dirname, '../frontend/views/customerview'),
   path.join(__dirname, '../frontend/views/adminview'),
 ]);
 
-// Serve static files
+// Static files
 app.use(express.static(path.join(__dirname, '../frontend')));
 
+// Session configuration
 app.use(
   session({
     secret: process.env.SESSION_SECRET || '1234',
@@ -37,11 +36,11 @@ app.use(
     saveUninitialized: false,
     store: MongoStore.create({
       mongoUrl: process.env.MONGODB_URI || 'mongodb://localhost:27017/buildYourPC',
-      ttl: 2 * 24 * 60 * 60, // Time-to-live: 2 days in seconds
+      ttl: 2 * 24 * 60 * 60,
     }),
     cookie: {
-      maxAge: 2 * 24 * 60 * 60 * 1000, // 2 days in milliseconds
-      secure: false, // Set to true if using HTTPS
+      maxAge: 2 * 24 * 60 * 60 * 1000,
+      secure: process.env.NODE_ENV === 'production',
     },
   })
 );
@@ -49,30 +48,42 @@ app.use(
 // Enable CORS
 app.use(cors());
 
-// MongoDB connection //mongoose is used to connect to MongoDB
+// MongoDB connection
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/buildYourPC', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.error('MongoDB connection error:', err));
+.then(() => console.log('MongoDB connected'))
+.catch(err => console.error('MongoDB connection error:', err));
 
-// View Routes
+
+
+// Routes
 const viewRoutes = require('./routes/viewroutes');
-app.use('/', viewRoutes);
-
-// Admin Routes
 const adminRoutes = require('./routes/adminroutes');
-app.use('/admin', adminRoutes);
+const productRoutes = require('./routes/products');
 
-// 404 Error Handler
+app.use('/', viewRoutes);
+app.use('/admin', adminRoutes);
+app.use('/api', productRoutes);
+
+// Error handling
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    success: false,
+    message: 'Something broke!',
+    error: err.message
+  });
+});
+
+// 404 Handler
 app.use((req, res) => {
   res.status(404).send('404: Page not found');
 });
 
-// Start the server
+// Start server
 const PORT = process.env.PORT || 4000;
-
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}...`);
 });
