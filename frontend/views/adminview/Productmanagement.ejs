@@ -80,8 +80,7 @@
         </div>
 
         <!-- Product Form Modal -->
-        <div id="productFormModal"
-            class="hidden fixed inset-0 bg-black bg-opacity-50 items-center justify-center p-4" 
+        <div id="productFormModal" class="hidden fixed inset-0 bg-black bg-opacity-50 items-center justify-center p-4"
             style="display: none;">
             <div class="bg-slate-800 rounded-lg w-full max-w-2xl max-h-[90vh] flex flex-col">
                 <!-- Modal Header -->
@@ -115,17 +114,7 @@
                             <!-- Dynamic fields will be inserted here -->
                         </div>
 
-                        <div>
-                            <label class="block text-sm font-medium text-blue-200 mb-2">Price ($)</label>
-                            <input type="number" name="price" step="0.01"
-                                class="w-full px-4 py-2 bg-slate-700 text-white rounded" required>
-                        </div>
 
-                        <div>
-                            <label class="block text-sm font-medium text-blue-200 mb-2">Stock</label>
-                            <input type="number" name="stock" class="w-full px-4 py-2 bg-slate-700 text-white rounded"
-                                required>
-                        </div>
                     </form>
                 </div>
 
@@ -144,19 +133,18 @@
         // Category fields configuration
         const categoryFields = {
             CPU: [
-                { name: 'brand', label: 'Brand', type: 'text' },
                 { name: 'model', label: 'Model', type: 'text' },
-                { name: 'manufacturer', label: 'Manufacturer', type: 'text' },
-                { name: 'frequency', label: 'Frequency (GHz)', type: 'number' },
+                { name: 'manufacturer', label: 'Manufacturer', type: 'text', enum: ['Intel', 'AMD'] },
                 { name: 'cores', label: 'Cores', type: 'number' },
-                { name: 'generation', label: 'Generation', type: 'number' },
+                { name: 'generation', label: 'Generation', type: 'text' },
                 { name: 'socket', label: 'Socket', type: 'text' },
                 { name: 'chipset', label: 'Chipset', type: 'text' },
                 { name: 'basespeed', label: 'Base Speed', type: 'number' },
                 { name: 'boostspeed', label: 'Boost Speed', type: 'number' },
+                { name: 'productImage', id: 'ProductImage', label: 'Product Image', type: 'file' },
                 { name: 'tdp', label: 'TDP', type: 'number' },
-                { name: 'image', label: 'Product Image', type: 'file' },
-
+                { name: 'price', label: 'Price', type: 'number' },
+                { name: 'stock', label: 'Stock', type: 'number' },
 
             ],
             motherboard: [
@@ -173,7 +161,10 @@
                 { name: 'ramType', label: 'RAM Type', type: 'text' },
                 { name: 'nvmeSupport', label: 'NVMe Support', type: 'boolean' },
                 { name: 'pcieVersion', label: 'PCIe Version', type: 'text' },
-                { name: 'image', label: 'Product Image', type: 'file' }
+                { name: 'productImage', id: 'ProductImage', label: 'Product Image', type: 'file' },
+                { name: 'price', label: 'Price', type: 'number' },
+                { name: 'stock', label: 'Stock', type: 'number' },
+
             ],
 
             RAM: [
@@ -184,7 +175,7 @@
                 { name: 'ramCapacity', label: 'RAM Capacity', type: 'text' },
                 { name: 'speed', label: 'Speed (MHz)', type: 'number' },
                 { name: 'voltage', label: 'Voltage', type: 'number' },
-                { name: 'image', label: 'Product Image', type: 'file' },
+                { name: 'productImage', id: 'ProductImage', label: 'Product Image', type: 'file' },
             ],
 
             storage: [
@@ -197,7 +188,7 @@
                 { name: 'readSpeed', label: 'Read Speed (MB/s)', type: 'number' },
                 { name: 'writeSpeed', label: 'Write Speed (MB/s)', type: 'number' },
                 { name: 'voltage', label: 'Voltage', type: 'number' },
-                { name: 'image', label: 'Product Image', type: 'file' },
+                { name: 'productImage', id: 'ProductImage', label: 'Product Image', type: 'file' },
 
             ],
 
@@ -212,7 +203,7 @@
                 { name: 'pcieVersion', label: 'PCIe Version', type: 'text' },
                 { name: 'tdp', label: 'TDP (W)', type: 'number' },
                 { name: 'length', label: 'Length (mm)', type: 'number' },
-                { name: 'image', label: 'Product Image', type: 'file' },
+                { name: 'productImage', id: 'ProductImage', label: 'Product Image', type: 'file' },
 
             ],
 
@@ -223,7 +214,7 @@
                 { name: 'wattage', label: 'Wattage (W)', type: 'number' },
                 { name: 'efficiency', label: 'Efficiency Rating', type: 'text' },
                 { name: 'formFactor', label: 'Form Factor', type: 'text' },
-                { name: 'image', label: 'Product Image', type: 'file' },
+                { name: 'productImage', id: 'ProductImage', label: 'Product Image', type: 'file' },
 
             ],
 
@@ -237,7 +228,7 @@
                 { name: 'coolingType', label: 'Cooling Type', type: 'text' },
                 { name: 'rpm', label: 'RPM', type: 'number' },
                 { name: 'liquid', label: 'Liquid Cooling', type: 'boolean' },
-                { name: 'image', label: 'Product Image', type: 'file' },
+                { name: 'productImage', id: 'ProductImage', label: 'Product Image', type: 'file' },
 
             ],
             Cabinet: [
@@ -251,7 +242,7 @@
                 { name: 'dimensions', label: 'Dimensions (mm)', type: 'object' },
                 { name: 'volume', label: 'Volume (L)', type: 'number' },
                 { name: 'usbSlots', label: 'USB Slots', type: 'object' },
-                { name: 'image', label: 'Product Image', type: 'file' },
+                { name: 'productImage', id: 'ProductImage', label: 'Product Image', type: 'file' },
 
             ],
 
@@ -370,7 +361,7 @@
             }
 
 
-            
+
         }
 
         // Function to load products from database
@@ -393,49 +384,25 @@
 
         async function handleSubmit(event) {
             event.preventDefault();
-            
+
             const form = event.target;
             const formData = new FormData(form);
-            const category = document.getElementById('productCategory').value;
-            
-            // Get the file input
-            const imageFile = formData.get('image');
-            
-            // Create a temporary URL for the image
-            const productImage = imageFile ? URL.createObjectURL(imageFile) : '';
-            
-            // Create an object from form data and convert number fields
-            const productData = {};
-            formData.forEach((value, key) => {
-                if (key === 'image') {
-                    // Skip the file input as we're handling it separately
-                    return;
-                }
-                // Convert number fields to numbers
-                if (['cores', 'frequency', 'basespeed', 'boostspeed', 'tdp', 'price'].includes(key)) {
-                    productData[key] = Number(value);
-                } else {
-                    productData[key] = value;
-                }
-            });
+            const category = document.getElementById('productCategory').value.toLowerCase();
 
-            // Add the image URL to the product data
-            productData.productImage = productImage || 'default-image-url.jpg';
-
-            console.log('Submitting product data:', productData); // Debug log
+            // Log the FormData contents for debugging
+            for (let pair of formData.entries()) {
+                console.log(pair[0] + ': ' + pair[1]);
+            }
 
             try {
-                const response = await fetch(`/api/${category.toLowerCase()}`, {
+                const response = await fetch(`/api/${category}`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(productData)
+                    body: formData  // Send FormData directly, don't stringify or set Content-Type
                 });
 
                 const result = await response.json();
-                console.log('Server response:', result); // Debug log
-                
+                console.log('Server response:', result);
+
                 if (result.success) {
                     alert('Product added successfully!');
                     hideProductForm();
@@ -448,6 +415,9 @@
                 alert('Failed to submit product. Please try again.');
             }
         }
+
+        // Update the form element to include the proper enctype
+        document.getElementById('productForm').setAttribute('enctype', 'multipart/form-data');
     </script>
 </body>
 
