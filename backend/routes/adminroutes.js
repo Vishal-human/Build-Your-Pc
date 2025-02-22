@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const Admin = require('../models/admin'); // Import the User model
-const { comparePassword } = require('../middleware/passwordMiddleware');
+const { encryptPassword, comparePassword } = require('../middleware/passwordMiddleware'); // Import password middleware
 const { isAuthenticated } = require('../middleware/sessionMiddleware');
-
+const bcrypt = require('bcrypt');
+const Admin = require('../models/admin'); // Ensure correct path
 //admin : /admin 
 
 router.get('/', (req, res) => {
@@ -43,7 +43,10 @@ router.post('/login', async (req, res) => {   //
 
 router.get('/dashboard', (req, res) => { //middleware to check if the admin is authenticated if the admin is login than he can access the dashboard
     res.render('dashboard');
+
 });
+
+
 
 router.get('/productmanagement', (req, res) => {
     //middleware to check if the admin is authenticated if the admin is login than he can access the dashboard
@@ -51,5 +54,42 @@ router.get('/productmanagement', (req, res) => {
 
 });
 
+
+// Route to handle password update
+router.post('/dashboard', async (req, res) => {
+    const { adminusername, oldpassword, newpassword } = req.body;
+
+    try {
+        // Find the admin by username
+        const admin = await Admin.findOne({ adminusername });
+        if (!admin) {
+            return res.render('dashboard', { error: 'Admin not found', message: null });
+        }
+
+        // Ensure admin has a password before comparing
+        if (!admin.password) {
+            return res.render('dashboard', { error: 'Admin password is missing in the database', message: null });
+        }
+
+        // Verify old password
+        const isMatch = await bcrypt.compare(oldpassword, admin.password);
+        if (!isMatch) {
+            return res.render('dashboard', { error: 'Incorrect old password', message: null });
+        }
+
+        // Hash the new password
+        const hashedPassword = await bcrypt.hash(newpassword, 10);
+
+        // Update the password
+        admin.password = hashedPassword;
+        await admin.save();
+
+        res.render('dashboard', { message: 'Password updated successfully!', error: null });
+
+    } catch (err) {
+        console.error(err);
+        res.render('dashboard', { error: 'Error updating password', message: null });
+    }
+});
 
 module.exports = router;

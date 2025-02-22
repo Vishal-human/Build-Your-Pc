@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
-const { memoryStorage } = require('multer');
 
 const motherboardSchema = new mongoose.Schema({
+    brand: {
+        type: String,
+        required: true
+    },
     model: {
         type: String,
         required: true

@@ -1,25 +1,32 @@
-/*************  ✨ Codeium Command 🌟  *************/
 const express = require('express');
 const router = express.Router();
-const CPU = require('../models/cpu'); // Changed to uppercase CPU for model
-const motherboard = require('../models/motherboard');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-// POST - Create a new CPU
 
+// Model schema imports
+const CPU = require('../models/cpu');
+const Motherboard = require('../models/motherboard');
+const RAM = require('../models/ram');
+const Storage = require('../models/storage');
+const GPU = require('../models/gpu');
+const PSU = require('../models/PSU');
+const Cabinet = require('../models/cabinet');
+const CPUCooler = require('../models/CPUCooler');
+
+
+// Ensure upload directory exists
 const uploadDir = './uploads';
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// Configure multer storage
-const storage = multer.diskStorage({
+// Multer Storage Configuration
+const storagefile = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, uploadDir); // Use the verified upload directory
+    cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
-    // Add file extension validation
     const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif'];
     const fileExt = path.extname(file.originalname).toLowerCase();
 
@@ -30,14 +37,14 @@ const storage = multer.diskStorage({
     cb(null, file.fieldname + '-' + Date.now() + fileExt);
   }
 });
-// File filter (optional: restrict file types)
+
+// File Upload Filter & Limit
 const upload = multer({
-  storage: storage,
+  storage: storagefile,
   limits: {
     fileSize: 5 * 1024 * 1024 // 5MB limit
   },
   fileFilter: (req, file, cb) => {
-    // Validate mime types
     if (file.mimetype.startsWith('image/')) {
       cb(null, true);
     } else {
@@ -46,55 +53,34 @@ const upload = multer({
   }
 });
 
+// Multer Middleware with Proper Error Handling
 const uploadMiddleware = (req, res, next) => {
   upload.single('productImage')(req, res, (err) => {
+    console.log('Multer File Debug:', req.file); // Debugging log
+
     if (err instanceof multer.MulterError) {
-      // A Multer error occurred (e.g., file too large)
-      return res.status(400).json({
-        success: false,
-        message: 'File upload error: ' + err.message
-      });
+      return res.status(400).json({ success: false, message: 'File upload error: ' + err.message });
     } else if (err) {
-      // An unknown error occurred
-      return res.status(400).json({
-        success: false,
-        message: err.message
-      });
+      return res.status(400).json({ success: false, message: err.message });
+    } else if (!req.file) {
+      return res.status(400).json({ success: false, message: 'No file uploaded' });
     }
     next();
   });
 };
 
+// POST - Create a new CPU
 router.post('/cpu', uploadMiddleware, async (req, res) => {
   try {
     console.log('Received CPU data:', req.body);
-    const { model, manufacturer, cores, generation, socket, chipset, basespeed, boostspeed, productImage, tdp, price, stock } = req.body;
+    const { brand, model, manufacturer, cores, generation, socket, chipset, basespeed, boostspeed, tdp, price, stock } = req.body;
 
-    // // Validate required fields
-    // if (!brand || !model || !manufacturer || !cores || !generation ||
-    //   !frequency || !socket || !chipset || !basespeed || !boostspeed ||
-    //   !tdp || !price || !stock) {
-    //   return res.status(400).json({
-    //     success: false,
-    //     message: 'Please provide all required fields'
-    //   });
-    // }
-
-    if (!req.file) {
-      return res.status(400).json({ error: "File upload failed or missing" });
-    }
-
-
-    // Validate manufacturer
     if (!['Intel', 'AMD'].includes(manufacturer)) {
-      console.log('Validation failed - invalid manufacturer'); // Debug log
-      return res.status(400).json({
-        success: false,
-        message: 'Manufacturer must be either Intel or AMD'
-      });
+      return res.status(400).json({ success: false, message: 'Manufacturer must be either Intel or AMD' });
     }
-    // Create new CPU
+
     const newCPU = new CPU({
+      brand,
       model,
       manufacturer,
       cores: Number(cores),
@@ -109,49 +95,27 @@ router.post('/cpu', uploadMiddleware, async (req, res) => {
       stock: Number(stock)
     });
 
-    console.log('Created CPU instance:', newCPU);
-
-    // Save to database
     const savedCPU = await newCPU.save();
-    console.log('Saved CPU to database:', savedCPU);
-    console.log("Uploaded file details:", req.file);
-
-    // Send success response
-    res.status(201).json({
-      success: true,
-      message: 'CPU created successfully',
-      data: savedCPU
-    });
+    res.status(201).json({ success: true, message: 'CPU created successfully', data: savedCPU });
   } catch (error) {
     console.error('Detailed error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to create CPU',
-      error: error.message,
-      details: error.errors
-    });
+    res.status(500).json({ success: false, message: 'Failed to create CPU', error: error.message });
   }
 });
 
-// Add a route to serve uploaded files
+// Serve uploaded files
 router.get('/uploads/:filename', (req, res) => {
   const filePath = path.join(__dirname, '../uploads', req.params.filename);
   res.sendFile(filePath);
 });
 
+// POST - Create a new Motherboard
 router.post('/motherboard', uploadMiddleware, async (req, res) => {
   try {
     console.log('Received motherboard data:', req.body);
 
-    // First check if file was uploaded
-    // if (!req.file) {
-    //   return res.status(400).json({
-    //     success: false,
-    //     message: 'Product image is required'
-    //   });
-    // }
-
     const {
+      brand,
       model,
       manufacturer,
       socket,
@@ -169,35 +133,16 @@ router.post('/motherboard', uploadMiddleware, async (req, res) => {
       price
     } = req.body;
 
-    // Validate required fields
-    const requiredFields = [
-      'model',
-      'manufacturer',
-      'socket',
-      'chipset',
-      'formFactor',
-      'maxMemory',
-      'tdp',
-      'supportedProcessor',
-      'ramSlots',
-      'ramType',
-      'nvmeSupport',
-      'pcieVersion',
-      'stock',
-      'price'
-    ];
+    const requiredFields = ['model', 'manufacturer', 'socket', 'chipset', 'formFactor', 'maxMemory', 'tdp', 'supportedProcessor', 'ramSlots', 'ramType', 'nvmeSupport', 'pcieVersion', 'stock', 'price'];
 
     const missingFields = requiredFields.filter(field => !req.body[field]);
 
     if (missingFields.length > 0) {
-      return res.status(400).json({
-        success: false,
-        message: `Please provide the following required fields: ${missingFields.join(', ')}`
-      });
+      return res.status(400).json({ success: false, message: `Please provide the following required fields: ${missingFields.join(', ')}` });
     }
 
-    // Create new motherboard with the uploaded file path
-    const newMotherboard = new motherboard({
+    const newMotherboard = new Motherboard({
+      brand,
       model,
       manufacturer,
       socket,
@@ -211,29 +156,184 @@ router.post('/motherboard', uploadMiddleware, async (req, res) => {
       ramType,
       nvmeSupport: nvmeSupport === 'true',
       pcieVersion,
-      productImage: `/uploads/${req.file.filename}`, // Now safe to use req.file.filename
+      productImage: `/uploads/${req.file.filename}`,
       stock: Number(stock),
       price: Number(price)
     });
 
     const savedMotherboard = await newMotherboard.save();
-    console.log('Saved motherboard to database:', savedMotherboard);
-
-    res.status(201).json({
-      success: true,
-      message: 'Motherboard created successfully',
-      data: savedMotherboard
-    });
+    res.status(201).json({ success: true, message: 'Motherboard created successfully', data: savedMotherboard });
   } catch (error) {
     console.error('Detailed error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to create motherboard',
-      error: error.message,
-      details: error.errors
-    });
+    res.status(500).json({ success: false, message: 'Failed to create motherboard', error: error.message });
   }
 });
 
-// Make sure to export the router
+// POST - Create a new RAM
+router.post('/ram', uploadMiddleware, async (req, res) => {
+  try {
+    console.log('Received RAM data:', req.body);
+    const { brand, model, manufacturer, ramType, ramCapacity, ramSpeed, voltage, price, stock } = req.body;
+
+    const newRAM = new RAM({
+      brand,
+      model,
+      manufacturer,
+      ramType,
+      ramCapacity,
+      ramSpeed,
+      voltage,
+      productImage: `/uploads/${req.file.filename}`,
+      price,
+      stock
+    });
+
+    const savedRam = await newRAM.save();
+    res.status(201).json({ success: true, message: 'RAM created successfully', data: savedRam });
+  } catch (error) {
+    console.error('Detailed error:', error);
+    res.status(500).json({ success: false, message: 'Failed to create RAM', error: error.message });
+  }
+});
+
+// POST - Create a new Storage
+router.post('/storage', uploadMiddleware, async (req, res) => {
+  try {
+    console.log('Received storage data:', req.body);
+    const { brand, model, manufacturer, capacity, type, nvmeSupport, readSpeed, writeSpeed, voltage, price, stock } = req.body;
+
+    const newStorage = new Storage({
+      brand,
+      model,
+      manufacturer,
+      capacity,
+      type,
+      nvmeSupport: nvmeSupport === 'true', // This correctly converts the string to Boolean
+      readSpeed,
+      writeSpeed,
+      voltage,
+      productImage: `/uploads/${req.file.filename}`,
+      price,
+      stock
+    });
+
+    const savedStorage = await newStorage.save();
+    res.status(201).json({ success: true, message: 'Storage created successfully', data: savedStorage });
+  } catch (error) {
+    console.error('Detailed error:', error);
+    res.status(500).json({ success: false, message: 'Failed to create storage', error: error.message });
+  }
+});
+
+router.post('/gpu', uploadMiddleware, async (req, res) => {
+  try {
+    console.log('Received GPU data:', req.body);
+    const { brand, model, manufacturer, chipset, memory, memoryType, pcieVersion, tdp, length, productImage, price, stock } = req.body;
+
+    const newGPU = new GPU({
+      brand,
+      model,
+      manufacturer,
+      chipset,
+      memory,
+      memoryType,
+      pcieVersion,
+      tdp,
+      length,
+      productImage: `/uploads/${req.file.filename}`,
+      price,
+      stock
+    });
+
+    const savedGPU = await newGPU.save();
+    res.status(201).json({ success: true, message: 'GPU created successfully', data: savedGPU });
+  } catch (error) {
+    console.error('Detailed error:', error);
+    res.status(500).json({ success: false, message: 'Failed to create GPU', error: error.message });
+  }
+});
+
+
+router.post('/psu', uploadMiddleware, async (req, res) => {
+  try {
+    console.log('Received PSU data:', req.body);
+    const { brand, model, manufacturer, wattage, formFactor, efficiency, productImage, price, stock } = req.body;
+
+    const newPSU = new PSU({
+      brand,
+      model,
+      manufacturer,
+      wattage,
+      formFactor,
+      efficiency,
+      productImage: `/uploads/${req.file.filename}`,
+      price,
+      stock
+    });
+
+    const savedPSU = await newPSU.save();
+    res.status(201).json({ success: true, message: 'PSU created successfully', data: savedPSU });
+  } catch (error) {
+    console.error('Detailed error:', error);
+    res.status(500).json({ success: false, message: 'Failed to create PSU', error: error.message });
+  }
+});
+
+router.post('/cpucooler', uploadMiddleware, async (req, res) => {
+  try {
+    console.log('Received CPU Cooler data:', req.body);
+    const { brand, model, manufacturer, socket, tdp, cpuType, coolingType, rpm, liquid, productImage, price, stock } = req.body;
+
+    const newCPUCooler = new CPUCooler({
+      brand,
+      model,
+      manufacturer,
+      socket,
+      tdp,
+      cpuType,
+      coolingType,
+      rpm,
+      liquid,
+      productImage: `/uploads/${req.file.filename}`,
+      price,
+      stock
+    });
+
+    const savedCPUcooler = await newCPUCooler.save();
+    res.status(201).json({ success: true, message: 'CPU Cooler created successfully', data: savedCPUcooler });
+  } catch (error) {
+    console.error('Detailed error:', error);
+    res.status(500).json({ success: false, message: 'Failed to create CPU Cooler', error: error.message });
+  }
+});
+
+router.post('/cabinet', uploadMiddleware, async (req, res) => {
+  try {
+    console.log('Received Cabinet data:', req.body);
+    const { brand, model, manufacturer, size, color, sidePanel, motherboadFormFactor, dimensions, volume, usbSlots, productImage, price, stock } = req.body;
+
+    const newCabinet = new Cabinet({
+      brand,
+      model,
+      manufacturer,
+      size,
+      color,
+      sidePanel,
+      motherboadFormFactor,
+      volume,
+      usbSlots,
+      productImage: `/uploads/${req.file.filename}`,
+      price,
+      stock
+    });
+
+    const savedCabinet = await newCabinet.save();
+    res.status(201).json({ success: true, message: 'Cabinet created successfully', data: savedCabinet });
+  } catch (error) {
+    console.error('Detailed error:', error);
+    res.status(500).json({ success: false, message: 'Failed to create Cabinet', error: error.message });
+  }
+});
+
+
 module.exports = router;

@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
 
 const cpuSchema = new mongoose.Schema({
-   
+    brand: {
+        type: String,
+        required: true
+    },
     model: {
         type: String,
         required: true
@@ -47,8 +50,8 @@ const cpuSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    
-    stock:{
+
+    stock: {
         type: Number,
         required: true
     }

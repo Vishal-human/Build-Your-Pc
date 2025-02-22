@@ -133,6 +133,7 @@
         // Category fields configuration
         const categoryFields = {
             CPU: [
+                { name: 'brand', label: 'Brand', type: 'text' },
                 { name: 'model', label: 'Model', type: 'text' },
                 { name: 'manufacturer', label: 'Manufacturer', type: 'text', enum: ['Intel', 'AMD'] },
                 { name: 'cores', label: 'Cores', type: 'number' },
@@ -141,13 +142,14 @@
                 { name: 'chipset', label: 'Chipset', type: 'text' },
                 { name: 'basespeed', label: 'Base Speed', type: 'number' },
                 { name: 'boostspeed', label: 'Boost Speed', type: 'number' },
-                { name: 'productImage', id: 'ProductImage', label: 'Product Image', type: 'file' },
                 { name: 'tdp', label: 'TDP', type: 'number' },
                 { name: 'price', label: 'Price', type: 'number' },
                 { name: 'stock', label: 'Stock', type: 'number' },
+                { name: 'productImage', id: 'ProductImage', label: 'Product Image', type: 'file' },
 
             ],
             motherboard: [
+
                 { name: 'brand', label: 'Brand', type: 'text' },
                 { name: 'model', label: 'Model', type: 'text' },
                 { name: 'manufacturer', label: 'Manufacturer', type: 'text' },
@@ -161,9 +163,9 @@
                 { name: 'ramType', label: 'RAM Type', type: 'text' },
                 { name: 'nvmeSupport', label: 'NVMe Support', type: 'boolean' },
                 { name: 'pcieVersion', label: 'PCIe Version', type: 'text' },
-                { name: 'productImage', id: 'ProductImage', label: 'Product Image', type: 'file' },
                 { name: 'price', label: 'Price', type: 'number' },
                 { name: 'stock', label: 'Stock', type: 'number' },
+                { name: 'productImage', id: 'ProductImage', label: 'Product Image', type: 'file' },
 
             ],
 
@@ -173,13 +175,15 @@
                 { name: 'manufacturer', label: 'Manufacturer', type: 'text' },
                 { name: 'ramType', label: 'RAM Type', type: 'text' },
                 { name: 'ramCapacity', label: 'RAM Capacity', type: 'text' },
-                { name: 'speed', label: 'Speed (MHz)', type: 'number' },
+                { name: 'ramSpeed', label: 'Speed (MHz)', type: 'number' },
                 { name: 'voltage', label: 'Voltage', type: 'number' },
-                { name: 'productImage', id: 'ProductImage', label: 'Product Image', type: 'file' },
+                { name: 'price', label: 'Price', type: 'number' },
+                { name: 'stock', label: 'Stock', type: 'number' },
+                { name: 'productImage', id: 'ProductImage', label: 'Product Image', type: 'file' }
             ],
 
             storage: [
-                { name: 'brand', label: 'Brand', type: 'text' },
+                { name: 'brnad', label: 'Brand', type: 'text' },
                 { name: 'model', label: 'Model', type: 'text' },
                 { name: 'manufacturer', label: 'Manufacturer', type: 'text' },
                 { name: 'capacity', label: 'Capacity (GB)', type: 'number' },
@@ -188,8 +192,9 @@
                 { name: 'readSpeed', label: 'Read Speed (MB/s)', type: 'number' },
                 { name: 'writeSpeed', label: 'Write Speed (MB/s)', type: 'number' },
                 { name: 'voltage', label: 'Voltage', type: 'number' },
-                { name: 'productImage', id: 'ProductImage', label: 'Product Image', type: 'file' },
-
+                { name: 'stock', label: 'Stock', type: 'number' },
+                { name: 'price', label: 'Price', type: 'number' },
+                { name: 'productImage', label: 'Product Image', type: 'file' },
             ],
 
             GPU: [
@@ -199,12 +204,12 @@
                 { name: 'chipset', label: 'Chipset', type: 'text' },
                 { name: 'memory', label: 'Memory (GB)', type: 'number' },
                 { name: 'memoryType', label: 'Memory Type', type: 'text' },
-                { name: 'clockSpeed', label: 'Clock Speed (MHz)', type: 'number' },
                 { name: 'pcieVersion', label: 'PCIe Version', type: 'text' },
                 { name: 'tdp', label: 'TDP (W)', type: 'number' },
                 { name: 'length', label: 'Length (mm)', type: 'number' },
                 { name: 'productImage', id: 'ProductImage', label: 'Product Image', type: 'file' },
-
+                { name: 'stock', label: 'Stock Availability', type: 'number' },
+                { name: 'price', label: 'Price ($)', type: 'number' }
             ],
 
             PSU: [
@@ -215,7 +220,8 @@
                 { name: 'efficiency', label: 'Efficiency Rating', type: 'text' },
                 { name: 'formFactor', label: 'Form Factor', type: 'text' },
                 { name: 'productImage', id: 'ProductImage', label: 'Product Image', type: 'file' },
-
+                { name: 'stock', label: 'Stock Availability', type: 'number' },
+                { name: 'price', label: 'Price ($)', type: 'number' }
             ],
 
             CPUCooler: [
@@ -229,7 +235,8 @@
                 { name: 'rpm', label: 'RPM', type: 'number' },
                 { name: 'liquid', label: 'Liquid Cooling', type: 'boolean' },
                 { name: 'productImage', id: 'ProductImage', label: 'Product Image', type: 'file' },
-
+                { name: 'stock', label: 'Stock Availability', type: 'number' },
+                { name: 'price', label: 'Price ($)', type: 'number' }
             ],
             Cabinet: [
                 { name: 'brand', label: 'Brand', type: 'text' },
@@ -239,12 +246,12 @@
                 { name: 'color', label: 'Color Options', type: 'array' },
                 { name: 'sidePanel', label: 'Side Panel Type', type: 'text' },
                 { name: 'motherboardFormFactor', label: 'Motherboard Form Factor', type: 'array' },
-                { name: 'dimensions', label: 'Dimensions (mm)', type: 'object' },
                 { name: 'volume', label: 'Volume (L)', type: 'number' },
                 { name: 'usbSlots', label: 'USB Slots', type: 'object' },
                 { name: 'productImage', id: 'ProductImage', label: 'Product Image', type: 'file' },
-
-            ],
+                { name: 'stock', label: 'Stock Availability', type: 'number' },
+                { name: 'price', label: 'Price ($)', type: 'number' }
+            ]
 
 
         };
