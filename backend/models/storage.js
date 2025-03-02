@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const storageSchema = new mongoose.Schema({
+    category: {
+        type: String,
+        required: true
+    },
     brand: {
         type: String,
         required: true
@@ -49,6 +53,10 @@ const storageSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    isActive: {
+        type: Boolean,
+        default: true
+    }
 
 });
 

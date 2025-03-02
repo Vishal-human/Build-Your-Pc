@@ -16,6 +16,24 @@
 </head>
 
 <body>
+    <script>
+        async function toggleUserStatus(userId) {
+            try {
+                const response = await fetch(`/users/${userId}/toggle`, { method: 'PUT' });
+                const data = await response.json();
+
+                if (data.success) {
+                    const button = document.getElementById(`toggle-btn-${userId}`);
+                    button.innerText = data.isActive ? "Deactivate" : "Activate";
+                    location.reload(); // Refresh to update status
+                } else {
+                    alert("Failed to update user status.");
+                }
+            } catch (error) {
+                console.error("Error toggling user status:", error);
+            }
+        }
+    </script>
     <div class="min-h-screen flex">
         <!-- Sidebar -->
         <div class="w-64 bg-slate-800 text-white p-4">
@@ -94,42 +112,6 @@
 
                 </div>
             </section>
-
-            <!-- Categories Section -->
-            <!-- <section id="categories" class="mb-8">
-                <div class="bg-slate-800 rounded-lg p-6">
-                    <h2 class="text-2xl font-bold text-white mb-4">Category Management</h2>
-                    <div class="mb-4">
-                        <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
-                            Add New Category
-                        </button>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full text-white">
-                            <thead>
-                                <tr class="border-b border-slate-700">
-                                    <th class="px-4 py-2 text-left">Category Name</th>
-                                    <th class="px-4 py-2 text-left">Status</th>
-                                    <th class="px-4 py-2 text-left">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                             
-                                <tr class="border-b border-slate-700">
-                                    <td class="px-4 py-2">CPU</td>
-                                    <td class="px-4 py-2">Active</td>
-                                    <td class="px-4 py-2">
-                                        <button class="text-blue-400 hover:text-blue-300 mr-2">Edit</button>
-                                        <button class="text-red-400 hover:text-red-300">Deactivate</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-          </section> -->
-
-            <!-- Customers Section -->
             <section id="customers" class="mb-8">
                 <div class="bg-slate-800 rounded-lg p-6">
                     <h2 class="text-2xl font-bold text-white mb-4">Customer Management</h2>
@@ -143,19 +125,38 @@
                                     <th class="px-4 py-2 text-left">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <!-- Sample row -->
-                                <tr class="border-b border-slate-700">
-                                    <td class="px-4 py-2">John Doe</td>
-                                    <td class="px-4 py-2">john@example.com</td>
-                                    <td class="px-4 py-2">Active</td>
-                                    <td class="px-4 py-2">
-                                        <button class="text-blue-400 hover:text-blue-300 mr-2">View</button>
-                                        <button class="text-red-400 hover:text-red-300">Deactivate</button>
-                                    </td>
-                                </tr>
+
+                            <tbody id="productTableBody">
+                                <% if (users && users.length> 0) { %>
+                                    <% users.forEach(user=> { %>
+                                        <tr class="border-b border-slate-700">
+                                            <td class="px-4 py-2">
+                                                <%= user.fullname %>
+                                            </td>
+                                            <td class="px-4 py-2">
+                                                <%= user.email %>
+                                            </td>
+                                            <td class="px-4 py-2">
+                                                <%= user.isActive ? 'Active' : 'Inactive' %>
+                                            </td>
+                                            <td class="px-4 py-2">
+                                                <button id="toggle-btn-<%= user._id %>"
+                                                    class="text-yellow-400 hover:text-green-300"
+                                                    onclick="toggleUserStatus('<%= user._id %>')">
+                                                    <%= user.isActive ? 'Deactivate' : 'Activate' %>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <% }); %>
+                                            <% } else { %>
+                                                <tr>
+                                                    <td colspan="4" class="px-4 py-2 text-center text-gray-400">No users
+                                                        found</td>
+                                                </tr>
+                                                <% } %>
                             </tbody>
                         </table>
+
                     </div>
                 </div>
             </section>

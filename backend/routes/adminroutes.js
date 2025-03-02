@@ -4,6 +4,15 @@ const { encryptPassword, comparePassword } = require('../middleware/passwordMidd
 const { isAuthenticated } = require('../middleware/sessionMiddleware');
 const bcrypt = require('bcrypt');
 const Admin = require('../models/admin'); // Ensure correct path
+const CPU = require('../models/cpu');
+const Motherboard = require('../models/motherboard');
+const RAM = require('../models/ram');
+const Storage = require('../models/storage');
+const GPU = require('../models/gpu');
+const PSU = require('../models/PSU');
+const Cabinet = require('../models/cabinet');
+const CPUCooler = require('../models/CPUCooler');
+const User = require('../models/User');
 //admin : /admin 
 
 router.get('/', (req, res) => {
@@ -41,18 +50,16 @@ router.post('/login', async (req, res) => {   //
     }
 });
 
-router.get('/dashboard', (req, res) => { //middleware to check if the admin is authenticated if the admin is login than he can access the dashboard
-    res.render('dashboard');
-
-});
 
 
 
-router.get('/productmanagement', (req, res) => {
-    //middleware to check if the admin is authenticated if the admin is login than he can access the dashboard
-    res.render('Productmanagement');
+// router.get('/productmanagement', (req, res) => {
+//     //middleware to check if the admin is authenticated if the admin is login than he can access the dashboard
+//     res.render('Productmanagement');
 
-});
+// });
+
+
 
 
 // Route to handle password update
@@ -91,5 +98,68 @@ router.post('/dashboard', async (req, res) => {
         res.render('dashboard', { error: 'Error updating password', message: null });
     }
 });
+
+router.get('/Productmanagement', async (req, res) => {
+    try {
+
+        const ramProducts = await RAM.find();
+        const psuProducts = await PSU.find();
+        const cpuProducts = await CPU.find();
+        const motherboardProducts = await Motherboard.find();
+        const storageProducts = await Storage.find();
+        const gpuProducts = await GPU.find();
+        const cpuCoolerProducts = await CPUCooler.find();
+        const cabinetProducts = await Cabinet.find();
+
+        res.render('Productmanagement', { ramProducts, psuProducts, cpuProducts, motherboardProducts, storageProducts, gpuProducts, cpuCoolerProducts, cabinetProducts });
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        res.status(500).json({ success: false, message: 'Failed to fetch products', error: error.message });
+    }
+});
+
+router.get("/dashboard", async (req, res) => {
+    try {
+        const users = await User.find();
+        console.log("Fetched Users:", users); // Debugging: Print users in the console
+        res.render('dashboard', { users });
+    } catch (error) {
+        console.error("Error fetching users:", error);
+        res.status(500).json({ success: false, message: "Server error", error: error.message });
+    }
+});
+
+// router.get('/componentselection', async (req, res) => {
+//     try {
+//         const cpuProducts = await CPU.find();
+//         const motherboardProducts = await Motherboard.find();
+//         const ramProducts = await RAM.find();
+//         const storageProducts = await Storage.find();
+//         const psuProducts = await PSU.find();
+//         const gpuProducts = await GPU.find();
+//         const cpuCoolerProducts = await CPUCooler.find();
+//         const cabinetProducts = await Cabinet.find();
+
+//         res.render('componentselection', {
+//             cpuProducts,
+//             motherboardProducts,
+//             ramProducts,
+//             storageProducts,
+//             psuProducts,
+//             gpuProducts,
+//             cpuCoolerProducts,
+//             cabinetProducts,
+//             title: 'Select Your Components',
+//         });
+
+//     } catch (error) {
+//         console.error('Error fetching products:', error);
+//         res.status(500).json({ success: false, message: 'Failed to fetch products', error: error.message });
+//     }
+// });
+
+
+
+
 
 module.exports = router;

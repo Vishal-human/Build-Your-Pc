@@ -37,14 +37,16 @@
     <div class="min-h-screen p-8">
         <!-- Category Selection -->
         <div class="mb-6">
-            <select id="categorySelect" onchange="filterProducts()" class="bg-slate-700 text-white px-4 py-2 rounded">
+            <select id="categorySelect" name="categoryselect" onchange="filterProducts()"
+                class="bg-slate-700 text-white px-4 py-2 rounded">
                 <option value="all">All Categories</option>
                 <option value="CPU">CPU</option>
                 <option value="GPU">GPU</option>
                 <option value="RAM">RAM</option>
                 <option value="motherboard">Motherboard</option>
                 <option value="storage">Storage</option>
-                <option value="PSU">Power Supply</option>
+                <option value="PSU">PSU</option>
+                <option value="CPUCooler">CPU Cooler</option>
                 <option value="Cabinet">Case</option>
             </select>
         </div>
@@ -59,21 +61,295 @@
                 </button>
             </div>
 
+
             <!-- Product Table -->
             <div class="overflow-x-auto">
                 <table class="min-w-full text-white">
                     <thead>
                         <tr class="border-b border-slate-700">
-                            <th class="px-4 py-2 text-left">Product Name</th>
-                            <th class="px-4 py-2 text-left">Category</th>
-                            <th class="px-4 py-2 text-left">Price</th>
-                            <th class="px-4 py-2 text-left">Stock</th>
-                            <th class="px-4 py-2 text-left">Status</th>
-                            <th class="px-4 py-2 text-left">Actions</th>
+                            <th class="px-0 py-2 text-left">Categorie</th>
+                            <th class="px-0 py-2 text-left">Model</th>
+                            <th class="px-0 py-2 text-left">Manufacturer</th>
+                            <th class="px-0 py-2 text-left">stock</th>
+                            <th class="px-0 py-2 text-left">price</th>
+                            <th class="px-0 py-2 text-left">Actions</th>
+
                         </tr>
                     </thead>
                     <tbody id="productTableBody">
-                        <!-- Products will be loaded here -->
+                        <% ramProducts.forEach(product=> { %>
+                            <tr data-category="RAM">
+
+                                <td>
+                                    <%= product.category%>
+
+
+                                </td>
+                                <td>
+                                    <%= product.model %>
+                                </td>
+
+                                <td>
+                                    <%= product.manufacturer %>
+                                </td>
+                                </td>
+                                <td>$<%= product.stock %>
+                                </td>
+                                <td>
+                                    <%= product.price %>
+                                </td>
+                                <td>
+
+                                    <button class="text-red-400 hover:text-red-300"
+                                        onclick="deleteProduct('<%= product._id %>')">
+                                        Delete
+                                    </button>
+                                    <button id="toggle-btn-<%= product._id %>"
+                                        class="text-yellow-400 hover:text-green-300"
+                                        onclick="toggleProductStatus('<%= product._id %>')">
+                                        <%= product.isActive ? 'Deactivate' : 'Activate' %>
+                                    </button>
+
+
+                            </tr>
+                            <% }); %>
+
+                                <% psuProducts.forEach(product=> { %>
+                                    <tr data-category="PSU">
+                                        <td>
+                                            <%= product.category %>
+                                        </td>
+                                        <td>
+                                            <%= product.model %>
+                                        </td>
+                                        <td>
+                                            <%= product.manufacturer %>
+                                        </td>
+                                        <td>
+                                            <%= product.stock %>
+                                        </td>
+
+                                        <td>$<%= product.price %>
+                                        </td>
+                                        <td>
+
+                                            <button class="text-red-400 hover:text-red-300"
+                                                onclick="deleteProduct('<%= product._id %>')">
+                                                Delete
+                                            </button>
+                                            <button id="toggle-btn-<%= product._id %>"
+                                                class="text-yellow-400 hover:text-green-300"
+                                                onclick="toggleProductStatus('<%= product._id %>')">
+                                                <%= product.isActive ? 'Deactivate' : 'Activate' %>
+                                            </button>
+
+                                    </tr>
+                                    <% }); %>
+                                        <% cpuProducts.forEach(product=> { %>
+                                            <tr data-category="CPU">
+                                                <td>
+                                                    <%= product.category %>
+                                                </td>
+                                                <td>
+                                                    <%= product.model %>
+                                                </td>
+                                                <td>
+                                                    <%= product.manufacturer %>
+                                                </td>
+                                                <td>
+                                                    <%= product.stock %>
+                                                </td>
+
+                                                <td>$<%= product.price %>
+                                                </td>
+                                                <td>
+
+                                                    <button class="text-red-400 hover:text-red-300"
+                                                        onclick="deleteProduct('<%= product._id %>')">
+                                                        Delete
+                                                    </button>
+                                                    <button id="toggle-btn-<%= product._id %>"
+                                                        class="text-yellow-400 hover:text-green-300"
+                                                        onclick="toggleProductStatus('<%= product._id %>')">
+                                                        <%= product.isActive ? 'Deactivate' : 'Activate' %>
+                                                    </button>
+
+
+
+                                            </tr>
+                                            <% }); %>
+                                                <% gpuProducts.forEach(product=> { %>
+                                                    <tr data-category="GPU">
+                                                        <td>
+                                                            <%= product.category %>
+                                                        </td>
+                                                        <td>
+                                                            <%= product.model %>
+                                                        </td>
+                                                        <td>
+                                                            <%= product.manufacturer %>
+                                                        </td>
+                                                        <td>
+                                                            <%= product.stock %>
+                                                        </td>
+
+                                                        <td>$<%= product.price %>
+                                                        </td>
+                                                        <td>
+
+                                                            <button class="text-red-400 hover:text-red-300"
+                                                                onclick="deleteProduct('<%= product._id %>')">
+                                                                Delete
+                                                            </button>
+                                                            <button id="toggle-btn-<%= product._id %>"
+                                                                class="text-yellow-400 hover:text-green-300"
+                                                                onclick="toggleProductStatus('<%= product._id %>')">
+                                                                <%= product.isActive ? 'Deactivate' : 'Activate' %>
+                                                            </button>
+
+
+                                                    </tr>
+                                                    <% }); %>
+                                                        <% motherboardProducts.forEach(product=> { %>
+                                                            <tr data-category="Motherboard">
+                                                                <td>
+                                                                    <%= product.category %>
+                                                                </td>
+                                                                <td>
+                                                                    <%= product.model %>
+                                                                </td>
+                                                                <td>
+                                                                    <%= product.manufacturer %>
+                                                                </td>
+                                                                <td>
+                                                                    <%= product.stock %>
+                                                                </td>
+
+                                                                <td>$<%= product.price %>
+                                                                </td>
+                                                                <td>
+
+                                                                    <button class="text-red-400 hover:text-red-300"
+                                                                        onclick="deleteProduct('<%= product._id %>')">
+                                                                        Delete
+                                                                    </button>
+                                                                    <button id="toggle-btn-<%= product._id %>"
+                                                                        class="text-yellow-400 hover:text-green-300"
+                                                                        onclick="toggleProductStatus('<%= product._id %>')">
+                                                                        <%= product.isActive ? 'Deactivate' : 'Activate'
+                                                                            %>
+                                                                    </button>
+
+                                                            </tr>
+                                                            <% }); %>
+                                                                <% storageProducts.forEach(product=> { %>
+                                                                    <tr data-category="Storage">
+                                                                        <td>
+                                                                            <%= product.category %>
+                                                                        </td>
+                                                                        <td>
+                                                                            <%= product.model %>
+                                                                        </td>
+                                                                        <td>
+                                                                            <%= product.manufacturer %>
+                                                                        </td>
+                                                                        <td>
+                                                                            <%= product.stock %>
+                                                                        </td>
+
+                                                                        <td>$<%= product.price %>
+                                                                        </td>
+                                                                        <td>
+
+                                                                            <button
+                                                                                class="text-red-400 hover:text-red-300"
+                                                                                onclick="deleteProduct('<%= product._id %>')">
+                                                                                Delete
+                                                                            </button>
+                                                                            <button id="toggle-btn-<%= product._id %>"
+                                                                                class="text-yellow-400 hover:text-green-300"
+                                                                                onclick="toggleProductStatus('<%= product._id %>')">
+                                                                                <%= product.isActive ? 'Deactivate'
+                                                                                    : 'Activate' %>
+                                                                            </button>
+
+                                                                    </tr>
+                                                                    <% }); %>
+                                                                        <% cpuCoolerProducts.forEach(product=> { %>
+                                                                            <tr data-category="CPU Cooler">
+                                                                                <td>
+                                                                                    <%= product.category %>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <%= product.model %>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <%= product.manufacturer %>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <%= product.stock %>
+                                                                                </td>
+                                                                                <td>$<%= product.price %>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <button
+                                                                                        class="text-red-400 hover:text-red-300"
+                                                                                        onclick="deleteProduct('<%= product._id %>')">
+                                                                                        Delete
+                                                                                    </button>
+                                                                                    <button
+                                                                                        id="toggle-btn-<%= product._id %>"
+                                                                                        class="text-yellow-400 hover:text-green-300"
+                                                                                        onclick="toggleProductStatus('<%= product._id %>')">
+                                                                                        <%= product.isActive
+                                                                                            ? 'Deactivate' : 'Activate'
+                                                                                            %>
+                                                                                    </button>
+
+                                                                                </td>
+                                                                            </tr>
+                                                                            <% }); %>
+                                                                                <% cabinetProducts.forEach(product=> {
+                                                                                    %>
+                                                                                    <tr data-category="Cabinet">
+                                                                                        <td>
+                                                                                            <%= product.category %>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <%= product.model %>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <%= product.manufacturer %>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <%= product.stock %>
+                                                                                        </td>
+                                                                                        <td>$<%= product.price %>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <button
+                                                                                                class="text-red-400 hover:text-red-300"
+                                                                                                onclick="deleteProduct('<%= product._id %>')">
+                                                                                                Delete
+                                                                                            </button>
+
+                                                                                            <button
+                                                                                                id="toggle-btn-<%= product._id %>"
+                                                                                                class="text-yellow-400 hover:text-green-300"
+                                                                                                onclick="toggleProductStatus('<%= product._id %>')">
+                                                                                                <%= product.isActive
+                                                                                                    ? 'Deactivate'
+                                                                                                    : 'Activate' %>
+                                                                                            </button>
+
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                    <% }); %>
+
+
+
+
+                                                                                        <!-- Products will be loaded here -->
                     </tbody>
                 </table>
             </div>
@@ -97,11 +373,11 @@
                     <form id="productForm" class="space-y-4" onsubmit="">
                         <div>
                             <label class="block text-sm font-medium text-blue-200 mb-2">Category</label>
-                            <select id="productCategory" onchange="updateFormFields()"
+                            <select id="productCategory" name="category" onchange="updateFormFields()"
                                 class="w-full px-4 py-2 bg-slate-700 text-white rounded">
                                 <option value="CPU">CPU</option>
                                 <option value="motherboard">Motherboard</option>
-                                <option value="RAM">RAM</option>
+                                <option value=" RAM">RAM</option>
                                 <option value="storage">Storage</option>
                                 <option value="GPU">GPU</option>
                                 <option value="PSU">Power Supply</option>
@@ -130,6 +406,9 @@
     </div>
 
     <script>
+        //reusable button for deactive and active product 
+
+
         // Category fields configuration
         const categoryFields = {
             CPU: [
@@ -149,7 +428,6 @@
 
             ],
             motherboard: [
-
                 { name: 'brand', label: 'Brand', type: 'text' },
                 { name: 'model', label: 'Model', type: 'text' },
                 { name: 'manufacturer', label: 'Manufacturer', type: 'text' },
@@ -255,6 +533,42 @@
 
 
         };
+        async function toggleProductStatus(productId) {
+            try {
+                const response = await fetch(`/api/productmanagement/${productId}/toggle`, { method: 'PUT' });
+                const data = await response.json();
+
+                if (data.success) {
+                    const button = document.getElementById(`toggle-btn-${productId}`);
+                    button.innerText = data.isActive ? "Deactivate" : "Activate";
+                } else {
+                    alert("Failed to update product status.");
+                }
+            } catch (error) {
+                console.error("Error toggling product status:", error);
+            }
+        }
+
+
+        //delete the product
+        function deleteProduct(productId) {
+            fetch(`/api/productmanagement/${productId}`, {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(`Product deleted from ${data.category} collection`);
+                        location.reload(); // Refresh the page
+                    } else {
+                        alert("Failed to delete product: " + data.message);
+                    }
+                })
+                .catch(error => console.error("Error deleting product:", error));
+        }
+
+
 
         // Function to update form fields based on category
         function updateFormFields() {
@@ -292,17 +606,22 @@
 
         // Function to filter products
         function filterProducts() {
-            const category = document.getElementById('categorySelect').value;
-            const rows = document.querySelectorAll('#productTableBody tr');
+            const category = document.getElementById("categorySelect").value.toLowerCase();
+            const rows = document.querySelectorAll("#productTableBody tr");
 
             rows.forEach(row => {
-                if (category === 'all' || row.dataset.category === category) {
-                    row.style.display = '';
+                const productCategory = row.getAttribute("data-category")?.toLowerCase();
+
+                if (category === "all" || productCategory === category) {
+                    row.style.display = ""; // Show matching rows
                 } else {
-                    row.style.display = 'none';
+                    row.style.display = "none"; // Hide non-matching rows
                 }
             });
         }
+
+
+
 
         // Function to show add product form
         function showAddProductForm() {
@@ -327,31 +646,8 @@
         document.getElementById('productForm').addEventListener('submit', handleSubmit);
 
         // Function to toggle product status
-        function toggleProductStatus(productId) {
-            const product = products.find(p => p.id === productId);
-            if (product) {
-                product.active = !product.active;
-                loadProducts();
-            }
-        }
 
-        // Function to edit product
-        function editProduct(productId) {
-            const product = products.find(p => p.id === productId);
-            if (product) {
-                document.getElementById('formTitle').textContent = 'Edit Product';
-                document.getElementById('productCategory').value = product.category;
-                updateFormFields();
 
-                // Fill form with product data
-                Object.keys(product).forEach(key => {
-                    const input = document.querySelector(`[name = "${key}"]`);
-                    if (input) input.value = product[key];
-                });
-
-                showAddProductForm();
-            }
-        }
 
         // Function to fetch products from database
         async function fetchProductsFromDatabase() {
@@ -370,24 +666,6 @@
 
 
         }
-
-        // Function to load products from database
-        async function loadProducts() {
-            try {
-                const fetchedProducts = await fetchProductsFromDatabase();
-                products = fetchedProducts; // Update global products array
-                displayProducts(); // Update the UI with fetched products
-            } catch (error) {
-                console.error('Error loading products:', error);
-                alert('Failed to load products. Please try again.');
-            }
-        }
-
-        // Initialize the page
-        document.addEventListener('DOMContentLoaded', () => {
-            loadProducts();
-            updateFormFields();
-        });
 
         async function handleSubmit(event) {
             event.preventDefault();

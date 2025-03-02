@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const ramSchema = new mongoose.Schema({
+    category: {
+        type: String,
+        required: true
+    },
     brand: {
         type: String,
         required: true
@@ -43,6 +47,10 @@ const ramSchema = new mongoose.Schema({
     stock: {
         type: Number,
         required: true
+    },
+    isActive: {
+        type: Boolean,
+        default: true
     }
 });
 

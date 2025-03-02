@@ -3,7 +3,6 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-
 // Model schema imports
 const CPU = require('../models/cpu');
 const Motherboard = require('../models/motherboard');
@@ -73,13 +72,14 @@ const uploadMiddleware = (req, res, next) => {
 router.post('/cpu', uploadMiddleware, async (req, res) => {
   try {
     console.log('Received CPU data:', req.body);
-    const { brand, model, manufacturer, cores, generation, socket, chipset, basespeed, boostspeed, tdp, price, stock } = req.body;
+    const { category, brand, model, manufacturer, cores, generation, socket, chipset, basespeed, boostspeed, tdp, price, stock } = req.body;
 
     if (!['Intel', 'AMD'].includes(manufacturer)) {
       return res.status(400).json({ success: false, message: 'Manufacturer must be either Intel or AMD' });
     }
 
     const newCPU = new CPU({
+      category,
       brand,
       model,
       manufacturer,
@@ -115,6 +115,7 @@ router.post('/motherboard', uploadMiddleware, async (req, res) => {
     console.log('Received motherboard data:', req.body);
 
     const {
+      category,
       brand,
       model,
       manufacturer,
@@ -142,6 +143,7 @@ router.post('/motherboard', uploadMiddleware, async (req, res) => {
     }
 
     const newMotherboard = new Motherboard({
+      category,
       brand,
       model,
       manufacturer,
@@ -173,9 +175,10 @@ router.post('/motherboard', uploadMiddleware, async (req, res) => {
 router.post('/ram', uploadMiddleware, async (req, res) => {
   try {
     console.log('Received RAM data:', req.body);
-    const { brand, model, manufacturer, ramType, ramCapacity, ramSpeed, voltage, price, stock } = req.body;
+    const { category, brand, model, manufacturer, ramType, ramCapacity, ramSpeed, voltage, price, stock } = req.body;
 
     const newRAM = new RAM({
+      category,
       brand,
       model,
       manufacturer,
@@ -200,9 +203,10 @@ router.post('/ram', uploadMiddleware, async (req, res) => {
 router.post('/storage', uploadMiddleware, async (req, res) => {
   try {
     console.log('Received storage data:', req.body);
-    const { brand, model, manufacturer, capacity, type, nvmeSupport, readSpeed, writeSpeed, voltage, price, stock } = req.body;
+    const { category, brand, model, manufacturer, capacity, type, nvmeSupport, readSpeed, writeSpeed, voltage, price, stock } = req.body;
 
     const newStorage = new Storage({
+      category,
       brand,
       model,
       manufacturer,
@@ -228,9 +232,10 @@ router.post('/storage', uploadMiddleware, async (req, res) => {
 router.post('/gpu', uploadMiddleware, async (req, res) => {
   try {
     console.log('Received GPU data:', req.body);
-    const { brand, model, manufacturer, chipset, memory, memoryType, pcieVersion, tdp, length, productImage, price, stock } = req.body;
+    const { category, brand, model, manufacturer, chipset, memory, memoryType, pcieVersion, tdp, length, productImage, price, stock } = req.body;
 
     const newGPU = new GPU({
+      category,
       brand,
       model,
       manufacturer,
@@ -257,9 +262,10 @@ router.post('/gpu', uploadMiddleware, async (req, res) => {
 router.post('/psu', uploadMiddleware, async (req, res) => {
   try {
     console.log('Received PSU data:', req.body);
-    const { brand, model, manufacturer, wattage, formFactor, efficiency, productImage, price, stock } = req.body;
+    const { category, brand, model, manufacturer, wattage, formFactor, efficiency, productImage, price, stock } = req.body;
 
     const newPSU = new PSU({
+      category,
       brand,
       model,
       manufacturer,
@@ -282,9 +288,10 @@ router.post('/psu', uploadMiddleware, async (req, res) => {
 router.post('/cpucooler', uploadMiddleware, async (req, res) => {
   try {
     console.log('Received CPU Cooler data:', req.body);
-    const { brand, model, manufacturer, socket, tdp, cpuType, coolingType, rpm, liquid, productImage, price, stock } = req.body;
+    const { category, brand, model, manufacturer, socket, tdp, cpuType, coolingType, rpm, liquid, productImage, price, stock } = req.body;
 
     const newCPUCooler = new CPUCooler({
+      category,
       brand,
       model,
       manufacturer,
@@ -310,9 +317,10 @@ router.post('/cpucooler', uploadMiddleware, async (req, res) => {
 router.post('/cabinet', uploadMiddleware, async (req, res) => {
   try {
     console.log('Received Cabinet data:', req.body);
-    const { brand, model, manufacturer, size, color, sidePanel, motherboadFormFactor, dimensions, volume, usbSlots, productImage, price, stock } = req.body;
+    const { category, brand, model, manufacturer, size, color, sidePanel, motherboadFormFactor, dimensions, volume, usbSlots, productImage, price, stock } = req.body;
 
     const newCabinet = new Cabinet({
+      category,
       brand,
       model,
       manufacturer,
@@ -334,6 +342,59 @@ router.post('/cabinet', uploadMiddleware, async (req, res) => {
     res.status(500).json({ success: false, message: 'Failed to create Cabinet', error: error.message });
   }
 });
+
+const models = { RAM, PSU, CPU, Motherboard, Storage, GPU, CPUCooler, Cabinet };
+
+router.delete('/productmanagement/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    let deletedProduct = null;
+    for (const [category, Model] of Object.entries(models)) {
+      deletedProduct = await Model.findByIdAndDelete(id);
+      if (deletedProduct) {
+        return res.status(200).json({
+          success: true,
+          message: `Deleted from ${category} collection`,
+          category
+        });
+      }
+    }
+
+    res.status(404).json({ success: false, message: 'Product not found' });
+  } catch (error) {
+    console.error('Error deleting product:', error);
+    res.status(500).json({ success: false, message: 'Failed to delete product', error: error.message });
+  }
+});
+
+//router to update active true or false
+router.put("/productmanagement/:id/toggle", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    for (const [category, Model] of Object.entries(models)) {
+      const product = await Model.findById(id);
+      if (product) {
+        product.isActive = !product.isActive; // Toggle the value
+        await product.save();
+
+        return res.json({
+          success: true,
+          isActive: product.isActive,
+          message: `Product in ${category} is now ${product.isActive ? 'Active' : 'Inactive'}`,
+        });
+      }
+    }
+
+    res.status(404).json({ success: false, message: "Product not found" });
+  } catch (error) {
+    console.error("Error toggling product status:", error);
+    res.status(500).json({ success: false, message: "Server error", error: error.message });
+  }
+});
+
+
 
 
 module.exports = router;

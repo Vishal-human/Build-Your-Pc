@@ -49,11 +49,11 @@ app.use(
 // Enable CORS
 app.use(cors());
 
-// MongoDB connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/buildYourPC', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+// MongoDB connection //without new parse 
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/buildYourPC',
+  {
+
+  })
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
 
@@ -67,6 +67,22 @@ const productRoutes = require('./routes/products');
 app.use('/', viewRoutes);
 app.use('/admin', adminRoutes);
 app.use('/api', productRoutes);
+app.use('/uploads', express.static('uploads'));
+const fs = require('fs');
+
+app.get('/:filename', (req, res) => {
+  const { filename } = req.params;
+  const filePath = path.join(__dirname, 'uploads', filename);
+
+  // Check if file exists
+  if (fs.existsSync(filePath)) {
+    res.sendFile(filePath);
+  } else {
+
+    res.status(404).json({ error: 'File not found' });
+  }
+});
+
 
 // Error handling
 app.use((err, req, res, next) => {

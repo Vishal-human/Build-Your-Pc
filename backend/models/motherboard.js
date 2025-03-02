@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const motherboardSchema = new mongoose.Schema({
+    category: {
+        type: String,
+        required: true
+    },
     brand: {
         type: String,
         required: true
@@ -64,6 +68,10 @@ const motherboardSchema = new mongoose.Schema({
     price: {
         type: Number
     },
+    isActive: {
+        type: Boolean,
+        default: true
+    }
 });
 
 module.exports = mongoose.model('Motherboard', motherboardSchema);

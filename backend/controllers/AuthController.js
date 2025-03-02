@@ -10,7 +10,8 @@ const getPageData = (email = '', error = '') => ({
     siteName: 'BuildYourPC',
     action: '/login',
     imageUrl: 'https://images.unsplash.com/photo-1628269989095-ef8569497706?q=80&w=1528&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    error
+    error,
+
 });
 
 class AuthController {
@@ -31,6 +32,13 @@ class AuthController {
             if (!user) {
                 return res.status(400).render('login',
                     getPageData(email, 'User not found.')
+                );
+            }
+
+            // Check if the user is deactivated
+            if (!user.isActive) {
+                return res.status(403).render('login',
+                    getPageData(email, 'Your account is deactivated. Please contact support.')
                 );
             }
 

@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Custom PC Builder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: hsl(221, 55%, 10%);
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .scrollbar {
+            scrollbar-width: thin;
+            scrollbar-color: #2390baf7 #1a1a1a;
+        }
+
+        .scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .scrollbar::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+
+        .scrollbar::-webkit-scrollbar-thumb {
+            background-color: #2390baf7;
+            border-radius: 10px;
+            border: 2px solid #1a1a1a;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px -4px rgba(59, 130, 246, 0.25);
+        }
+
+        .select-btn {
+            background-color: #1071cc;
+            color: white;
+            border: none;
+            padding: 10px 40px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 14px;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+
+        .select-btn:hover {
+            background-color: #221daa;
+        }
+
+        .select-btn:disabled {
+            background-color: #64748b;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .component-item {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .component-item:hover {
+            transform: translateY(-2px);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+
+        .component-item.selected {
+            border: 2px solid #1071cc;
+            background: rgba(30, 41, 59, 0.7);
+        }
+
+        @keyframes flowGradient {
+            0% {
+                background-position: -200% center;
+            }
+
+            100% {
+                background-position: 200% center;
+            }
+        }
+
+        .page-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            background: linear-gradient(to right,
+                    #1071cc,
+                    #221daa,
+                    #4f46e5,
+                    #1071cc,
+                    #221daa);
+            background-size: 200% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: flowGradient 6s linear infinite;
+        }
+
+        .component-image {
+            width: 100%;
+            height: 200px;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+
+        .specs-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 4px;
+        }
+
+        .specs-table tr td:first-child {
+            color: #93c5fd;
+            font-size: 0.875rem;
+        }
+
+        .specs-table tr td:last-child {
+            text-align: right;
+            font-weight: 500;
+        }
+
+        .progress-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .progress-step {
+            display: flex;
+            align-items: center;
+        }
+
+        .progress-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #334155;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 8px;
+            transition: all 0.3s ease;
+        }
+
+        .progress-circle.active {
+            background-color: #1071cc;
+        }
+
+        .progress-circle.completed {
+            background-color: #10b981;
+        }
+
+        .progress-line {
+            height: 3px;
+            width: 60px;
+            background-color: #334155;
+        }
+
+        .progress-line.active {
+            background-color: #10b981;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="min-h-screen">
+    <%- include('../partials/navbar.ejs') %>
+
+        <div class="container mx-auto px-4 py-8">
+            <h1 class="page-title">Build Your Custom PC</h1>
+
+            <div class="progress-indicator" id="progress-indicator">
+                <!-- Progress steps will be added dynamically -->
+            </div>
+
+            <h2 id="component-type-title" class="text-2xl font-bold text-center mb-6">Select CPU</h2>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Left side - Selected component details -->
+                <div class="glass-card p-6 rounded-lg">
+                    <div class="bg-slate-800/50 p-4 rounded-lg mb-4 flex items-center justify-center">
+                        <img id="selected-component-image" alt="Selected component" class="component-image"
+                            src="https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80" />
+                    </div>
+                    <div class="glass-card p-5 rounded-lg">
+                        <h3 id="selected-component-name" class="text-xl font-bold mb-4">Select a component</h3>
+                        <div id="selected-component-details">
+                            <p class="text-blue-200 text-sm">Please select a component from the list to view its
+                                details.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right side - Component list -->
+                <div class="glass-card p-6 rounded-lg">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold">Available Options</h3>
+                        <div class="flex space-x-2">
+                            <input type="text" id="search-input" placeholder="Search..."
+                                class="py-2 px-3 bg-slate-700/70 text-white rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full">
+                            <select id="sort-select"
+                                class="py-2 px-3 bg-slate-700/70 text-white rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="price-asc">Price: Low to High</option>
+                                <option value="price-desc">Price: High to Low</option>
+                                <option value="rating-desc">Highest Rated</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="component-list" class="space-y-3 overflow-y-auto max-h-[400px] scrollbar pr-2">
+                        <!-- Component items will be added dynamically -->
+                    </div>
+
+                    <div class="flex justify-between mt-6 space-x-3">
+                        <button id="back-btn" class="select-btn" disabled>Back</button>
+                        <button id="reset-btn" class="select-btn">Reset</button>
+                        <button id="next-btn" class="select-btn" disabled>Next</button>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" id="cpu-selection" value="<%= selectedCpu || '' %>">
+
+
+            <div class="mt-8 glass-card p-4 rounded-lg">
+                <h3 class="text-lg font-semibold mb-3">Your Build Summary</h3>
+                <div id="build-summary" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
+                    <!-- Selected components summary will be added here -->
+                </div>
+                <div class="mt-4 flex justify-between items-center">
+                    <div>
+                        <span class="text-sm text-blue-200">Total Price:</span>
+                        <span id="total-price" class="text-xl font-bold ml-2">₹0</span>
+                    </div>
+                    <button id="checkout-btn" class="select-btn" disabled>Proceed to Checkout</button>
+                </div>
+            </div>
+        </div>
+
+        <%- include('../partials/footer.ejs') %>
+
+
+            <script>
+                // Component types in order of selection
+                const COMPONENT_TYPES = [
+                    { id: 'cpu', name: 'CPU', icon: '🧠' },
+                    { id: 'motherboard', name: 'Motherboard', icon: '🔌' },
+                    { id: 'ram', name: 'RAM', icon: '🧮' },
+                    { id: 'gpu', name: 'Graphics Card', icon: '🖼️' },
+                    { id: 'storage', name: 'Storage', icon: '💾' }
+
+                ];
+
+                // State management
+                let state = {
+                    currentComponentTypeIndex: 0,
+                    selectedComponents: {},
+                    filteredComponents: [],
+                    searchTerm: '',
+                    sortOption: 'price-asc',
+                    componentsDatabase: {} // Will store fetched data
+                };
+
+                // DOM elements
+                const componentTypeTitle = document.getElementById('component-type-title');
+                const componentList = document.getElementById('component-list');
+                const selectedComponentImage = document.getElementById('selected-component-image');
+                const selectedComponentName = document.getElementById('selected-component-name');
+                const selectedComponentDetails = document.getElementById('selected-component-details');
+                const backBtn = document.getElementById('back-btn');
+                const nextBtn = document.getElementById('next-btn');
+                const resetBtn = document.getElementById('reset-btn');
+                const checkoutBtn = document.getElementById('checkout-btn');
+                const buildSummary = document.getElementById('build-summary');
+                const totalPrice = document.getElementById('total-price');
+                const progressIndicator = document.getElementById('progress-indicator');
+                const searchInput = document.getElementById('search-input');
+                const sortSelect = document.getElementById('sort-select');
+
+                // Initialize the application
+                async function init() {
+                    // Show loading state
+                    showLoading(true);
+
+                    try {
+                        // Fetch component data from the database
+                        await fetchComponentData();
+
+                        // Initialize UI
+                        createProgressIndicator();
+                        updateComponentTypeTitle();
+                        loadComponentsForCurrentType();
+                        updateBuildSummary();
+
+                        // Event listeners
+                        backBtn.addEventListener('click', goToPreviousStep);
+                        nextBtn.addEventListener('click', goToNextStep);
+                        resetBtn.addEventListener('click', resetSelection);
+                        checkoutBtn.addEventListener('click', proceedToCheckout);
+                        searchInput.addEventListener('input', handleSearch);
+                        sortSelect.addEventListener('change', handleSort);
+                    } catch (error) {
+                        console.error('Failed to initialize application:', error);
+                        showError('Failed to load component data. Please refresh the page or try again later.');
+                    } finally {
+                        // Hide loading state
+                        showLoading(false);
+                    }
+                }
+
+                // Show loading state
+                function showLoading(isLoading) {
+                    const loadingElement = document.getElementById('loading-overlay');
+
+                    if (isLoading) {
+                        if (!loadingElement) {
+                            const overlay = document.createElement('div');
+                            overlay.id = 'loading-overlay';
+                            overlay.className = 'fixed inset-0 bg-slate-900/80 flex items-center justify-center z-50';
+                            overlay.innerHTML = `
+                <div class="text-center">
+                    <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+                    <p class="text-white text-lg">Loading components...</p>
+                </div>
+            `;
+                            document.body.appendChild(overlay);
+                        }
+                    } else if (loadingElement) {
+                        loadingElement.remove();
+                    }
+                }
+
+                // Show error message
+                function showError(message) {
+                    const errorElement = document.createElement('div');
+                    errorElement.className = 'fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+                    errorElement.innerHTML = `
+        <div class="flex items-center">
+            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>${message}</span>
+        </div>
+    `;
+                    document.body.appendChild(errorElement);
+
+                    // Remove error after 5 seconds
+                    setTimeout(() => {
+                        errorElement.remove();
+                    }, 5000);
+                }
+
+
+                async function fetchComponentData() {
+                    try {
+                        const response = await fetch('/api/componentselection/json');
+
+                        if (!response.ok) {
+                            throw new Error(`Failed to fetch components: ${response.status} ${response.statusText}`);
+                        }
+
+                        const data = await response.json();
+                        console.log('Fetched component data:', data);
+
+                        // Ensure every category gets transformed correctly
+                        state.componentsDatabase = {
+                            cpu: transformData(data.cpuProducts),
+                            motherboard: transformData(data.motherboardProducts),
+                            ram: transformData(data.ramProducts),
+                            gpu: transformData(data.gpuProducts),
+                            storage: transformData(data.storageProducts),
+                            psu: transformData(data.psuProducts),
+                            cpuCooler: transformData(data.cpuCoolerProducts),
+                            cabinet: transformData(data.cabinetProducts)
+                        };
+
+                        return state.componentsDatabase;
+                    } catch (error) {
+                        console.error('Error fetching component data:', error);
+
+                        // Return empty arrays to prevent crashes
+                        state.componentsDatabase = {
+                            cpu: [],
+                            motherboard: [],
+                            ram: [],
+                            gpu: [],
+                            storage: [],
+                            psu: [],
+                            cpuCooler: [],
+                            cabinet: []
+                        };
+
+                        return state.componentsDatabase;
+                    }
+                }
+
+                // Transform product data
+                function transformData(products) {
+                    if (!Array.isArray(products) || products.length === 0) {
+                        return []; // Return empty array if no products exist
+                    }
+
+                    return products.map(product => ({
+                        id: product._id,
+                        category: product.category || 'Unknown',
+                        brand: product.brand || 'Unknown',
+                        manufacturer: product.manufacturer || 'Unknown',
+                        model: product.model || 'Unknown Model',
+                        price: product.price || 0,
+                        stock: product.stock || 0,
+                        image: product.productImage ? `../../..${product.productImage}` : 'https://via.placeholder.com/200',
+                        isActive: product.isActive || false,
+                        createdAt: product.createdAt || null,
+                        updatedAt: product.updatedAt || null,
+                        specs: extractSpecs(product)
+                    }));
+                }
+
+                // Extract additional specs dynamically
+                function extractSpecs(product) {
+                    const ignoredFields = [
+                        '_id', 'category', 'brand', 'manufacturer', 'model', 'price',
+                        'stock', 'productImage', 'createdAt', 'updatedAt', '__v', 'isActive'
+                    ];
+
+                    let specs = {};
+
+                    Object.keys(product).forEach(key => {
+                        if (!ignoredFields.includes(key) && product[key] !== null && product[key] !== undefined) {
+                            specs[key] = product[key];
+                        }
+                    });
+
+                    return specs;
+                }
+
+
+                // Create progress indicator
+                function createProgressIndicator() {
+                    progressIndicator.innerHTML = '';
+
+                    COMPONENT_TYPES.forEach((type, index) => {
+                        // Create step circle
+                        const stepCircle = document.createElement('div');
+                        stepCircle.className = `progress-circle ${index === state.currentComponentTypeIndex ? 'active' : ''} ${index < state.currentComponentTypeIndex ? 'completed' : ''}`;
+                        stepCircle.innerHTML = type.icon;
+
+                        // Create step container
+                        const stepContainer = document.createElement('div');
+                        stepContainer.className = 'progress-step';
+                        stepContainer.appendChild(stepCircle);
+
+                        // Add connecting line (except for the last item)
+                        if (index < COMPONENT_TYPES.length - 1) {
+                            const line = document.createElement('div');
+                            line.className = `progress-line ${index < state.currentComponentTypeIndex ? 'active' : ''}`;
+                            stepContainer.appendChild(line);
+                        }
+
+                        progressIndicator.appendChild(stepContainer);
+                    });
+                }
+
+                // Update the component type title
+                function updateComponentTypeTitle() {
+                    const currentType = COMPONENT_TYPES[state.currentComponentTypeIndex];
+                    componentTypeTitle.textContent = `Select ${currentType.name}`;
+                }
+
+                // Load components for the current type
+                function loadComponentsForCurrentType() {
+                    const currentType = COMPONENT_TYPES[state.currentComponentTypeIndex].id;
+                    let components = [...(state.componentsDatabase[currentType] || [])];
+
+                    // Filter components based on compatibility with previously selected components
+                    if (currentType !== 'cpu') {
+                        components = filterCompatibleComponents(components);
+                    }
+
+                    // Apply search filter
+                    if (state.searchTerm) {
+                        components = components.filter(component =>
+                            component.name.toLowerCase().includes(state.searchTerm.toLowerCase()) ||
+                            component.brand.toLowerCase().includes(state.searchTerm.toLowerCase())
+                        );
+                    }
+
+                    // Apply sorting
+                    state.filteredComponents = components;
+                    renderComponentList();
+                }
+
+                // Filter components based on compatibility
+                function filterCompatibleComponents(components) {
+                    const currentType = COMPONENT_TYPES[state.currentComponentTypeIndex].id;
+                    const selectedCpuBrand = document.getElementById('cpu-selection').value;
+                    console.log("Selected CPU:", selectedCpuBrand);
+
+
+
+                    if (currentType === 'cpu') {
+                        if (AMD === selectedCpuBrand) {
+                            return components.filter(component => component.brand === 'AMD');
+
+                        } else if (INTEL === selectedCpuBrand) {
+                            return components.filter(component => component.brand === 'Intel');
+                        }
+                    }
+
+                    if (currentType === 'motherboard') {
+                        return components; // You can add filtering for motherboard later if needed
+                    }
+
+                    return components;
+                }
+
+
+                // Sort components based on selected option
+                function sortComponents(components, sortOption) {
+                    switch (sortOption) {
+                        case 'price-asc':
+                            return [...components].sort((a, b) => a.price - b.price);
+                        case 'price-desc':
+                            return [...components].sort((a, b) => b.price - a.price);
+                        case 'rating-desc':
+                            return [...components].sort((a, b) => b.rating - a.rating);
+                        default:
+                            return components;
+                    }
+                }
+
+                // Render the component list
+                function renderComponentList() {
+
+                    componentList.innerHTML = '';
+
+                    if (state.filteredComponents.length === 0) {
+                        componentList.innerHTML = `
+            <div class="glass-card p-4 rounded-lg text-center">
+                <p>No compatible components found. Please try a different selection.</p>
+            </div>
+        `;
+                        return;
+                    }
+
+                    state.filteredComponents.forEach(component => {
+                        const currentType = COMPONENT_TYPES[state.currentComponentTypeIndex].id;
+                        const isSelected = state.selectedComponents[currentType]?.id === component.id;
+
+                        const componentItem = document.createElement('div');
+                        componentItem.className = `component-item glass-card p-4 rounded-lg ${isSelected ? 'selected' : ''}`;
+                        componentItem.onclick = () => selectComponent(component);
+
+                        // Create star rating HTML
+                        let starsHtml = '';
+                        for (let i = 0; i < 5; i++) {
+                            if (i < Math.floor(component.rating)) {
+                                starsHtml += '<span class="text-yellow-400">★</span>';
+                            } else if (i < component.rating) {
+                                starsHtml += '<span class="text-yellow-400">★</span>';
+                            } else {
+                                starsHtml += '<span class="text-gray-500">★</span>';
+                            }
+                        }
+
+                        // Get the first 3 specs for preview
+                        const specsPreview = Object.entries(component.specs).slice(0, 3).map(([key, value]) => {
+                            return `<span class="bg-slate-700/50 px-2 py-1 rounded text-xs"><span class="text-blue-300">${key}:</span> ${value}</span>`;
+                        }).join(' ');
+
+                        componentItem.innerHTML = `
+            <div class="flex items-center">
+                <div class="w-16 h-16 flex-shrink-0 bg-slate-900/50 rounded-lg overflow-hidden mr-3">
+                    <img src="${component.image}" alt="${component.name}" class="w-full h-full object-contain">
+                </div>
+                <div class="flex-grow">
+                    <h3 class="text-white font-semibold text-sm">${component.brand}</h3>
+                    <div class="flex justify-between items-center mt-1">
+                        <span class="text-blue-300 text-xs">${component.manfacturer}</span>
+                        <span class="text-green-400 font-medium">₹${component.price.toFixed(2)}</span>
+                    </div>
+                    <div class="mt-1 flex items-center">
+                        <div class="flex text-xs">
+                            ${starsHtml}
+                        </div>
+                    </div>
+                </div>
+                <div class="ml-2">
+                    <div class="w-6 h-6 rounded-full ${isSelected ? 'bg-blue-500' : 'bg-slate-700'} flex items-center justify-center">
+                        ${isSelected ? '<span class="text-white">✓</span>' : ''}
+                    </div>
+                </div>
+            </div>
+            <div class="mt-2 flex flex-wrap gap-1">
+                ${specsPreview}
+            </div>
+        `;
+
+                        componentList.appendChild(componentItem);
+                    });
+                }
+
+                // Select a component
+                function selectComponent(component) {
+                    const currentType = COMPONENT_TYPES[state.currentComponentTypeIndex].id;
+                    state.selectedComponents[currentType] = component;
+
+                    // Update UI
+                    selectedComponentImage.src = component.image;
+                    selectedComponentImage.alt = component.name;
+                    selectedComponentName.textContent = component.name;
+
+                    // Update details
+                    let detailsHtml = '<table class="specs-table">';
+                    detailsHtml += `<tr><td>Brand:</td><td>${component.brand}</td></tr>`;
+                    detailsHtml += `<tr><td>Model:</td><td>${component.model}</td></tr>`;
+                    detailsHtml += `<tr><td>Price:</td><td>₹${component.price.toFixed(2)}</td></tr>`;
+
+                    // Add all specs
+                    Object.entries(component.specs).forEach(([key, value]) => {
+                        detailsHtml += `<tr><td>${key}:</td><td>${value}</td></tr>`;
+                    });
+
+                    detailsHtml += '</table>';
+                    selectedComponentDetails.innerHTML = detailsHtml;
+
+                    // Enable next button
+                    nextBtn.disabled = false;
+
+                    // Re-render component list to update selection
+                    renderComponentList();
+
+                    // Update build summary
+                    updateBuildSummary();
+                }
+
+                // Go to the next component selection step
+                function goToNextStep() {
+                    if (state.currentComponentTypeIndex < COMPONENT_TYPES.length - 1) {
+                        state.currentComponentTypeIndex++;
+                        updateComponentTypeTitle();
+                        loadComponentsForCurrentType();
+                        createProgressIndicator();
+
+                        // Reset selected component display
+                        selectedComponentImage.src = 'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80';
+                        selectedComponentName.textContent = 'Select a component';
+                        selectedComponentDetails.innerHTML = '<p class="text-blue-200 text-sm">Please select a component from the list to view its details.</p>';
+
+                        // Enable back button
+                        backBtn.disabled = false;
+
+                        // Disable next button until a component is selected
+                        nextBtn.disabled = true;
+
+                        // If we've reached the last component, change next button to "Complete Build"
+                        if (state.currentComponentTypeIndex === COMPONENT_TYPES.length - 1) {
+                            nextBtn.textContent = 'Complete Build';
+                        }
+                    } else {
+                        // We've completed all steps
+                        checkoutBtn.disabled = false;
+                        alert('Build completed! You can now proceed to checkout.');
+                    }
+                }
+
+                // Go to the previous component selection step
+                function goToPreviousStep() {
+                    if (state.currentComponentTypeIndex > 0) {
+                        state.currentComponentTypeIndex--;
+                        updateComponentTypeTitle();
+                        loadComponentsForCurrentType();
+                        createProgressIndicator();
+
+                        // Update selected component display
+                        const currentType = COMPONENT_TYPES[state.currentComponentTypeIndex].id;
+                        const selectedComponent = state.selectedComponents[currentType];
+
+                        if (selectedComponent) {
+                            selectedComponentImage.src = selectedComponent.image;
+                            selectedComponentName.textContent = selectedComponent.name;
+
+                            let detailsHtml = '<table class="specs-table">';
+                            detailsHtml += `<tr><td>Brand:</td><td>${selectedComponent.brand}</td></tr>`;
+                            detailsHtml += `<tr><td>Model:</td><td>${selectedComponent.model}</td></tr>`;
+                            detailsHtml += `<tr><td>Price:</td><td>₹${selectedComponent.price.toFixed(2)}</td></tr>`;
+
+                            Object.entries(selectedComponent.specs).forEach(([key, value]) => {
+                                detailsHtml += `<tr><td>${key}:</td><td>${value}</td></tr>`;
+                            });
+
+                            detailsHtml += '</table>';
+                            selectedComponentDetails.innerHTML = detailsHtml;
+
+                            // Enable next button
+                            nextBtn.disabled = false;
+                        }
+
+                        // Disable back button if we're at the first step
+                        if (state.currentComponentTypeIndex === 0) {
+                            backBtn.disabled = true;
+                        }
+
+                        // Reset next button text if we're not at the last step
+                        if (state.currentComponentTypeIndex < COMPONENT_TYPES.length - 1) {
+                            nextBtn.textContent = 'Next';
+                        }
+                    }
+                }
+
+                // Reset the current selection
+                function resetSelection() {
+                    if (confirm('Are you sure you want to reset your entire build?')) {
+                        state.selectedComponents = {};
+                        state.currentComponentTypeIndex = 0;
+
+                        updateComponentTypeTitle();
+                        loadComponentsForCurrentType();
+                        createProgressIndicator();
+
+                        // Reset selected component display
+                        selectedComponentImage.src = 'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80';
+                        selectedComponentName.textContent = 'Select a component';
+                        selectedComponentDetails.innerHTML = '<p class="text-blue-200 text-sm">Please select a component from the list to view its details.</p>';
+
+                        // Disable navigation buttons
+                        backBtn.disabled = true;
+                        nextBtn.disabled = true;
+                        checkoutBtn.disabled = true;
+
+                        // Reset next button text
+                        nextBtn.textContent = 'Next';
+
+                        // Update build summary
+                        updateBuildSummary();
+                    }
+                }
+
+                // Update the build summary
+                function updateBuildSummary() {
+                    buildSummary.innerHTML = '';
+                    let totalPriceValue = 0;
+
+                    COMPONENT_TYPES.forEach(type => {
+                        const component = state.selectedComponents[type.id];
+
+                        const summaryItem = document.createElement('div');
+                        summaryItem.className = 'glass-card p-3 rounded-lg';
+
+                        if (component) {
+                            summaryItem.innerHTML = `
+                <div class="flex items-center">
+                    <div class="w-10 h-10 flex-shrink-0 bg-slate-900/50 rounded-lg overflow-hidden mr-2">
+                        <img src="${component.image}" alt="${component.name}" class="w-full h-full object-contain">
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-semibold text-blue-300">${type.name}</h4>
+                        <p class="text-white text-xs truncate" title="${component.name}">${component.name}</p>
+                        <p class="text-green-400 text-xs">₹${component.price.toFixed(2)}</p>
+                    </div>
+                </div>
+            `;
+
+                            totalPriceValue += component.price;
+                        } else {
+                            summaryItem.innerHTML = `
+                <div class="flex items-center">
+                    <div class="w-10 h-10 flex-shrink-0 bg-slate-900/50 rounded-lg overflow-hidden mr-2 flex items-center justify-center">
+                        <span class="text-lg">${type.icon}</span>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-semibold text-blue-300">${type.name}</h4>
+                        <p class="text-gray-400 text-xs">Not selected</p>
+                    </div>
+                </div>
+            `;
+                        }
+
+                        buildSummary.appendChild(summaryItem);
+                    });
+
+                    // Update total price
+                    totalPrice.textContent = `₹${totalPriceValue.toFixed(2)}`;
+
+                    // Enable checkout button if all components are selected
+                    const allComponentsSelected = COMPONENT_TYPES.every(type => state.selectedComponents[type.id]);
+                    checkoutBtn.disabled = !allComponentsSelected;
+                }
+
+                // Handle search input
+                function handleSearch() {
+                    state.searchTerm = searchInput.value.trim();
+                    loadComponentsForCurrentType();
+                }
+
+                // Handle sort selection
+                function handleSort() {
+                    state.sortOption = sortSelect.value;
+                    loadComponentsForCurrentType();
+                }
+
+                // Proceed to checkout
+                function proceedToCheckout() {
+                    // Show loading state
+                    showLoading(true);
+
+                    // Simulate API call to save the build to the database
+                    setTimeout(async () => {
+                        try {
+                            // In a real application, this would be an API endpoint
+                            // For demonstration, we'll simulate an API call
+                            const response = await fetch('/api/checkout', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    components: state.selectedComponents,
+                                    totalPrice: Object.values(state.selectedComponents).reduce((sum, component) => sum + component.price, 0)
+                                })
+                            });
+
+                            if (!response.ok) {
+                                throw new Error('Failed to process checkout');
+                            }
+
+                            // Redirect to checkout page
+                            window.location.href = '/checkout';
+                        } catch (error) {
+                            console.error('Error during checkout:', error);
+                            showError('Failed to process checkout. Please try again.');
+                            showLoading(false);
+                        }
+                    }, 1500);
+                }
+
+                // Initialize the application when the DOM is loaded
+                document.addEventListener('DOMContentLoaded', init);
+            </script>
+</body>
+
+</html>

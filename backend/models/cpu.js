@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const cpuSchema = new mongoose.Schema({
+    category: {
+        type: String,
+        required: true
+    },
     brand: {
         type: String,
         required: true
@@ -54,6 +58,10 @@ const cpuSchema = new mongoose.Schema({
     stock: {
         type: Number,
         required: true
+    },
+    isActive: {
+        type: Boolean,
+        default: true
     }
 }, {
     timestamps: true
