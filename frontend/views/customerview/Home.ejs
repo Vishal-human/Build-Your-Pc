@@ -76,12 +76,27 @@
 
         <!-- Hero Section -->
         <div class="relative overflow-hidden">
+
             <div class="hero-gradient absolute inset-0"></div>
+
             <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
                 <div class="text-center">
+                    <h1 class="text-3xl md:text-4xl font-bold text-white mb-3">
+
+                        <% if (session && session.user) { %>
+                            Hello, <strong
+                                class="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
+                                <%= session.user.fullname %>
+                            </strong>
+                            <% } else { %>
+
+                                <% } %>
+                    </h1>
                     <h1 class="text-5xl md:text-6xl font-bold text-white mb-6">
                         Build Your Dream PC
                     </h1>
+
+
                     <p class="text-xl text-blue-200 mb-12 max-w-2xl mx-auto">
                         Create the perfect custom PC with our advanced builder tool.
                         Select premium components and bring your vision to life.
@@ -104,7 +119,8 @@
                             <img src="../../assests/pc-selection.jpg" alt="Easy PC Configuration"
                                 class="rounded-lg mb-4 w-full" />
                             <h3 class="text-xl font-semibold text-white mb-2">Easy Selection</h3>
-                            <p class="text-blue-200">Simple step-by-step component selection with compatibility checking
+                            <p class="text-blue-200">Simple step-by-step component selection with compatibility
+                                checking
                             </p>
                             <div class="mt-4 flex flex-wrap gap-2">
                                 <span class="px-3 py-1 bg-blue-900/50 rounded-full text-blue-200 text-sm">Guided
@@ -118,7 +134,9 @@
                             <img src="https://img.freepik.com/free-photo/front-view-man-troubleshooting-computer_23-2148419157.jpg?t=st=1738407142~exp=1738410742~hmac=2c2269907c17a9c875627f42ef41eff71872878a00c7135294ad63be06fd35d1&w=740"
                                 alt="Professional Assembly" class="rounded-lg mb-4 w-full" />
                             <h3 class="text-xl font-semibold text-white mb-2">Expert Assembly</h3>
-                            <p class="text-blue-200">Professional building service with quality assurance testing</p>
+                            <p class="text-blue-200">Professional building service with quality assurance
+                                testing
+                            </p>
                             <div class="mt-4 flex flex-wrap gap-2">
                                 <span class="px-3 py-1 bg-blue-900/50 rounded-full text-blue-200 text-sm">Professional
                                     Build</span>
@@ -131,7 +149,8 @@
                             <img src="https://i.pinimg.com/736x/c9/d2/11/c9d2118a506a3b0a2e7668f389fa7794.jpg"
                                 alt="Home Delivery" class="rounded-lg mb-4 w-full" />
                             <h3 class="text-xl font-semibold text-white mb-2">Home Delivery</h3>
-                            <p class="text-blue-200">Secure packaging and delivery of your custom PC to your doorstep
+                            <p class="text-blue-200">Secure packaging and delivery of your custom PC to your
+                                doorstep
                             </p>
                             <div class="mt-4 flex flex-wrap gap-2">
                                 <span class="px-3 py-1 bg-blue-900/50 rounded-full text-blue-200 text-sm">Safe

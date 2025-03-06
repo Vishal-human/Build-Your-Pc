@@ -238,7 +238,7 @@
             <input type="hidden" id="cpu-selection" value="<%= selectedCpu || '' %>">
 
 
-            <div class="mt-8 glass-card p-4 rounded-lg">
+            <div class="mt-8 glass-card p-4 rounded-lg" id="build-summary-container">
                 <h3 class="text-lg font-semibold mb-3">Your Build Summary</h3>
                 <div id="build-summary" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
                     <!-- Selected components summary will be added here -->
@@ -248,6 +248,7 @@
                         <span class="text-sm text-blue-200">Total Price:</span>
                         <span id="total-price" class="text-xl font-bold ml-2">₹0</span>
                     </div>
+                    <!-- //build-summary-container -->
                     <button id="checkout-btn" class="select-btn" disabled>Proceed to Checkout</button>
                 </div>
             </div>
@@ -262,9 +263,10 @@
                     { id: 'cpu', name: 'CPU', icon: '🧠' },
                     { id: 'motherboard', name: 'Motherboard', icon: '🔌' },
                     { id: 'ram', name: 'RAM', icon: '🧮' },
+                    { id: 'storage', name: 'Storage', icon: '💾' },
                     { id: 'gpu', name: 'Graphics Card', icon: '🖼️' },
-                    { id: 'storage', name: 'Storage', icon: '💾' }
-
+                    { id: 'psu', name: 'Power Supply Unit', icon: '⚡️' },
+                    { id: 'cabinet', name: 'Cabinet', icon: '📦' },
                 ];
 
                 // State management
@@ -383,10 +385,9 @@
                             cpu: transformData(data.cpuProducts),
                             motherboard: transformData(data.motherboardProducts),
                             ram: transformData(data.ramProducts),
-                            gpu: transformData(data.gpuProducts),
                             storage: transformData(data.storageProducts),
+                            gpu: transformData(data.gpuProducts),
                             psu: transformData(data.psuProducts),
-                            cpuCooler: transformData(data.cpuCoolerProducts),
                             cabinet: transformData(data.cabinetProducts)
                         };
 
@@ -399,10 +400,9 @@
                             cpu: [],
                             motherboard: [],
                             ram: [],
-                            gpu: [],
                             storage: [],
+                            gpu: [],
                             psu: [],
-                            cpuCooler: [],
                             cabinet: []
                         };
 
@@ -676,7 +676,10 @@
                     } else {
                         // We've completed all steps
                         checkoutBtn.disabled = false;
-                        alert('Build completed! You can now proceed to checkout.');
+                        const buildSummaryContainer = document.getElementById('build-summary-container');
+                        if (buildSummaryContainer) {
+                            buildSummaryContainer.scrollIntoView({ behavior: 'smooth' });
+                        }
                     }
                 }
 
@@ -817,38 +820,29 @@
 
                 // Proceed to checkout
                 function proceedToCheckout() {
-                    // Show loading state
                     showLoading(true);
 
-                    // Simulate API call to save the build to the database
-                    setTimeout(async () => {
-                        try {
-                            // In a real application, this would be an API endpoint
-                            // For demonstration, we'll simulate an API call
-                            const response = await fetch('/api/checkout', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({
-                                    components: state.selectedComponents,
-                                    totalPrice: Object.values(state.selectedComponents).reduce((sum, component) => sum + component.price, 0)
-                                })
-                            });
+                    // Ensure selected components are stored as { id, price }
+                    const selectedComponents = Object.values(state.selectedComponents).map(component => ({
+                        id: component.id,
+                        name: component.name,
+                        model: component.model,
+                        brand: component.brand,
+                        price: component.price,
+                        category: component.category,
+                        image: component.image,
 
-                            if (!response.ok) {
-                                throw new Error('Failed to process checkout');
-                            }
 
-                            // Redirect to checkout page
-                            window.location.href = '/checkout';
-                        } catch (error) {
-                            console.error('Error during checkout:', error);
-                            showError('Failed to process checkout. Please try again.');
-                            showLoading(false);
-                        }
-                    }, 1500);
+
+                    }));
+
+                    // Store in localStorage to pass to next page
+                    localStorage.setItem('checkoutData', JSON.stringify(selectedComponents));
+
+                    // Redirect to checkout page
+                    window.location.href = '/checkout';
                 }
+
 
                 // Initialize the application when the DOM is loaded
                 document.addEventListener('DOMContentLoaded', init);

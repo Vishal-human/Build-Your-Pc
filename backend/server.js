@@ -9,6 +9,7 @@ const cookieParser = require('cookie-parser');
 const MongoStore = require('connect-mongo');
 const cors = require('cors');
 
+
 dotenv.config();
 const app = express();
 
@@ -45,6 +46,12 @@ app.use(
     },
   })
 );
+
+// Middleware to Pass Session to Views
+app.use((req, res, next) => {
+  res.locals.session = req.session;
+  next();
+});
 
 // Enable CORS
 app.use(cors());
@@ -98,6 +105,8 @@ app.use((err, req, res, next) => {
 app.use((req, res) => {
   res.status(404).send('404: Page not found');
 });
+
+
 
 // Start server
 const PORT = process.env.PORT || 4000;

@@ -14,10 +14,14 @@ const GPU = require('../models/gpu');
 const PSU = require('../models/PSU');
 const Cabinet = require('../models/cabinet');
 const CPUCooler = require('../models/CPUCooler');
+const Order = require('../models/Order');
 // Route: Home
-router.get('/', (_, res) => {
-  res.render('Home');
+router.get('/', (req, res) => {
+
+
+  res.render('Home', { session: req.session });
 });
+
 
 router.get('/login', authController.getLoginPage);
 
@@ -83,6 +87,16 @@ router.post('/signup', async (req, res, next) => {
     console.error(err);
     res.status(500).send('Error signing up.');
   }
+});
+
+router.post("/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Logout Error:", err);
+      return res.status(500).send("Could not log out");
+    }
+    res.redirect("/");
+  });
 });
 
 
@@ -165,6 +179,11 @@ router.get('/cpuselect', (req, res) => {
   });
 });
 
+router.post('/componentselection', (req, res) => {
+  // Process form data if needed
+  const selectedCpu = req.body.cpuSelection; // Get selected CPU from form
+  res.render('componentselection', { selectedCpu }); // Redirect to the GET route
+});
 
 router.get('/api/componentselection/json', async (req, res) => {
   try {
@@ -229,13 +248,63 @@ router.get('/componentselection', async (req, res) => {
   }
 });
 
-router.post('/componentselection', (req, res) => {
-  // Process form data if needed
-  const selectedCpu = req.body.cpuSelection; // Get selected CPU from form
-  res.render('componentselection', { selectedCpu }); // Redirect to the GET route
+
+router.post('/place-order', async (req, res) => {
+  try {
+    if (!req.session.user || !req.session.user.id) {
+      return res.status(401).json({ error: 'User not logged in' });
+    }
+
+    const { products, totalAmount } = req.body;
+
+    const order = new Order({
+      userId: req.session.user.id, // Ensure user is logged in
+      products,
+      totalAmount,
+      status: 'Pending',
+      createdAt: new Date()
+    });
+
+    await order.save();
+    res.status(201).json({ message: 'Order placed successfully', orderId: order._id });
+
+  } catch (error) {
+    console.error('Order error:', error);
+    res.status(500).json({ error: 'Failed to place order' });
+  }
 });
 
+router.get('/api/orders', async (req, res) => {
+  try {
+    if (!req.session.user || !req.session.user.id) {
+      return res.status(401).json({ error: 'User not logged in' });
+    }
 
+    // Find orders related to the logged-in user
+    const orders = await Order.find({ userId: req.session.user.id }).sort({ createdAt: -1 });
+
+    res.status(200).json(orders);
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    res.status(500).json({ error: 'Failed to fetch orders' });
+  }
+});
+
+router.get('/orders', async (req, res) => {
+  try {
+    if (!req.session.user || !req.session.user.id) {
+      return res.status(401).json({ error: 'User not logged in' });
+    }
+
+    // Find orders related to the logged-in user
+    const orders = await Order.find({ userId: req.session.user.id }).sort({ createdAt: -1 });
+
+    res.render('orders', { orders });
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    res.status(500).json({ error: 'Failed to fetch orders' });
+  }
+});
 
 
 

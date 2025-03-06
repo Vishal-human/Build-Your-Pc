@@ -54,7 +54,13 @@ class AuthController {
 
             // If everything is ok, proceed with login
             // Add your session/token logic here
-            res.redirect('/'); // or wherever you want to redirect after login
+            req.session.user = {
+                id: user._id,
+                fullname: user.fullname,  // Store full name in session
+                email: user.email
+            };
+
+            res.redirect('/');
 
         } catch (error) {
             console.error('Login error:', error);

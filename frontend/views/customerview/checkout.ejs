@@ -4,46 +4,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout - Build Your PC</title>
+    <title>Checkout</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../../css/checkout.css">
 </head>
 
-<body class="relative min-h-screen pt-4 px-4 sm:px-6 lg:px-8" style="background-color: #0a192f;">
+<body class="bg-gray-900 text-white">
 
-    <%- include('../partials/navbar.ejs') %>
-        <!-- Background overlay -->
-        <div class="bg-overlay"></div>
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-blue-400 mb-6">Checkout</h1>
 
-        <div class="max-w-7xl mx-auto relative z-10">
-            <%- include('../partials/header.ejs') %>
+        <!-- Checkout Summary -->
+        <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-semibold mb-4">Order Summary</h2>
+            <div id="checkout-summary" class="space-y-3">
+                <!-- Selected components will be injected here -->
+            </div>
 
-                <!-- Single Form -->
-                <form id="checkoutForm" method="POST" action="/checkout" class="mb-32">
-                    <div class="grid md:grid-cols-2 gap-8">
-                        <!-- Address Section -->
-                        <div>
-                            <%- include('../partials/address-form.ejs') %>
-                        </div>
+            <!-- Pricing Details -->
+            <div class="mt-6 p-4 border-t border-gray-600">
+                <div class="flex justify-between text-lg">
+                    <span>Subtotal:</span>
+                    <span id="total-price" class="font-semibold">₹0</span>
+                </div>
+                <div class="flex justify-between text-lg mt-2">
+                    <span>Delivery Fee:</span>
+                    <span class="font-semibold">₹100</span>
+                </div>
+                <div class="flex justify-between text-xl font-bold mt-4">
+                    <span>Total:</span>
+                    <span id="final-amount">₹100</span>
+                </div>
+            </div>
 
-                        <!-- Payment Section -->
-                        <div>
-                            <%- include('../partials/payment-form.ejs') %>
-                                <div class="mt-12">
-                                    <button type="submit"
-                                        class="w-full py-3 bg-blue-700 text-white font-semibold rounded-2xl shadow-md hover:bg-blue-600">
-                                        Place Order
-                                    </button>
-                                </div>
-                        </div>
-                    </div>
-                </form>
-
+            <!-- Buy Now Button -->
+            <button id="buy-btn" class="mt-6 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-lg">
+                Buy Now
+            </button>
         </div>
+    </div>
 
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const checkoutSummary = document.getElementById("checkout-summary");
+            const totalPriceEl = document.getElementById("total-price");
+            const finalAmountEl = document.getElementById("final-amount");
+            const buyButton = document.getElementById("buy-btn");
 
-        <%- include('../partials/footer.ejs') %>
+            if (!checkoutSummary || !totalPriceEl || !finalAmountEl || !buyButton) {
+                console.error("One or more elements are missing from the checkout page.");
+                return;
+            }
+
+            const deliveryFee = 500;
+            const checkoutData = JSON.parse(localStorage.getItem("checkoutData")) || [];
+
+            if (checkoutData.length === 0) {
+                checkoutSummary.innerHTML = `<p class="text-red-400">No items selected.</p>`;
+                return;
+            }
+
+            let totalPrice = 0;
+
+            checkoutData.forEach(item => {
+                const itemElement = document.createElement("div");
+                itemElement.classList.add("flex", "justify-between", "border-b", "pb-2", "mb-2");
+                itemElement.innerHTML = `
+                     <span class="text-blue-300">brand: ${item.brand}</span>
+                    <span class="text-blue-300">MOdel: ${item.model}</span>
+                    <span class="text-white font-bold"> ₹${item.price}</span>
+                `;
+                checkoutSummary.appendChild(itemElement);
+                totalPrice += item.price;
+            });
+
+            totalPriceEl.textContent = `₹${totalPrice}`;
+            finalAmountEl.textContent = `₹${totalPrice + deliveryFee}`;
+
+            // Handle "Buy Now" button
+            buyButton.addEventListener("click", async () => {
+                try {
+                    const response = await fetch("/place-order", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            products: checkoutData,
+                            totalAmount: totalPrice + deliveryFee
+                        })
+                    });
+
+                    if (!response.ok) throw new Error("Failed to place order");
+
+                    alert("Order placed successfully!");
+                    localStorage.removeItem("checkoutData");
+                    window.location.href = "/orders";
+                } catch (error) {
+                    console.error("Error:", error);
+                    alert("Failed to place order. Please try again.");
+                }
+            });
+        });
+    </script>
 
 </body>
 
 </html>
+
+
+
+
+<!-- <span class="text-blue-300">Product ID: ${item.id}</span> for storing id into database -->
