@@ -37,9 +37,15 @@
             </div>
 
             <!-- Buy Now Button -->
-            <button id="buy-btn" class="mt-6 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-lg">
-                Buy Now
-            </button>
+            <% if (session && session.user) { %>
+                <button id="buy-btn"
+                    class="mt-6 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-lg">
+                    Buy Now
+                </button>
+                <% } else { %>
+                    <p class="text-center text-red-500 font-semibold mt-6">Please log in to proceed with the purchase.
+                    </p>
+                    <% } %>
         </div>
     </div>
 

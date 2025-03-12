@@ -306,6 +306,10 @@ router.get('/orders', async (req, res) => {
   }
 });
 
+router.get('/about',async(req,res)=>{
+  res.render('about')
+})  
+
 
 
 
