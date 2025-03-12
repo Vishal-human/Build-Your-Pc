@@ -9,43 +9,95 @@
 </head>
 
 <body class="bg-gray-900 text-white">
-
     <div class="container mx-auto px-4 py-8">
         <h1 class="text-3xl font-bold text-blue-400 mb-6">Checkout</h1>
 
-        <!-- Checkout Summary -->
-        <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
-            <h2 class="text-2xl font-semibold mb-4">Order Summary</h2>
-            <div id="checkout-summary" class="space-y-3">
-                <!-- Selected components will be injected here -->
+        <div class="grid gap-8 lg:grid-cols-2">
+            <!-- Address Form Section -->
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-semibold mb-6">Shipping Address</h2>
+                <form id="address-form" class="space-y-4">
+                    <div class="grid gap-6 md:grid-cols-2">
+                        <div>
+                            <label for="fullName" class="block text-sm font-medium text-gray-300 mb-1">Full Name</label>
+                            <input type="text" id="fullName" name="fullName" required
+                                class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-300 mb-1">Email</label>
+                            <input type="email" id="email" name="email" required
+                                class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="phone" class="block text-sm font-medium text-gray-300 mb-1">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" required
+                            class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div>
+                        <label for="streetAddress" class="block text-sm font-medium text-gray-300 mb-1">Street
+                            Address</label>
+                        <input type="text" id="streetAddress" name="streetAddress" required
+                            class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div class="grid gap-6 md:grid-cols-3">
+                        <div>
+                            <label for="city" class="block text-sm font-medium text-gray-300 mb-1">City</label>
+                            <input type="text" id="city" name="city" required
+                                class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label for="state" class="block text-sm font-medium text-gray-300 mb-1">State</label>
+                            <input type="text" id="state" name="state" required
+                                class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label for="zipCode" class="block text-sm font-medium text-gray-300 mb-1">ZIP Code</label>
+                            <input type="text" id="zipCode" name="zipCode" required
+                                class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+                </form>
             </div>
 
-            <!-- Pricing Details -->
-            <div class="mt-6 p-4 border-t border-gray-600">
-                <div class="flex justify-between text-lg">
-                    <span>Subtotal:</span>
-                    <span id="total-price" class="font-semibold">₹0</span>
+            <!-- Order Summary Section -->
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-semibold mb-4">Order Summary</h2>
+                <div id="checkout-summary" class="space-y-3">
+                    <!-- Selected components will be injected here -->
                 </div>
-                <div class="flex justify-between text-lg mt-2">
-                    <span>Delivery Fee:</span>
-                    <span class="font-semibold">₹100</span>
-                </div>
-                <div class="flex justify-between text-xl font-bold mt-4">
-                    <span>Total:</span>
-                    <span id="final-amount">₹100</span>
-                </div>
-            </div>
 
-            <!-- Buy Now Button -->
-            <% if (session && session.user) { %>
-                <button id="buy-btn"
-                    class="mt-6 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-lg">
-                    Buy Now
-                </button>
-                <% } else { %>
-                    <p class="text-center text-red-500 font-semibold mt-6">Please log in to proceed with the purchase.
-                    </p>
-                    <% } %>
+                <!-- Pricing Details -->
+                <div class="mt-6 p-4 border-t border-gray-600">
+                    <div class="flex justify-between text-lg">
+                        <span>Subtotal:</span>
+                        <span id="total-price" class="font-semibold">₹0</span>
+                    </div>
+                    <div class="flex justify-between text-lg mt-2">
+                        <span>Delivery Fee:</span>
+                        <span class="font-semibold">₹100</span>
+                    </div>
+                    <div class="flex justify-between text-xl font-bold mt-4">
+                        <span>Total:</span>
+                        <span id="final-amount">₹100</span>
+                    </div>
+                </div>
+
+                <!-- Buy Now Button -->
+                <% if (session && session.user) { %>
+                    <button id="buy-btn"
+                        class="mt-6 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition duration-200">
+                        Place Order
+                    </button>
+                    <% } else { %>
+                        <p class="text-center text-red-500 font-semibold mt-6">
+                            Please log in to proceed with the purchase.
+                        </p>
+                        <% } %>
+            </div>
         </div>
     </div>
 
@@ -55,8 +107,9 @@
             const totalPriceEl = document.getElementById("total-price");
             const finalAmountEl = document.getElementById("final-amount");
             const buyButton = document.getElementById("buy-btn");
+            const addressForm = document.getElementById("address-form");
 
-            if (!checkoutSummary || !totalPriceEl || !finalAmountEl || !buyButton) {
+            if (!checkoutSummary || !totalPriceEl || !finalAmountEl || !buyButton || !addressForm) {
                 console.error("One or more elements are missing from the checkout page.");
                 return;
             }
@@ -73,11 +126,11 @@
 
             checkoutData.forEach(item => {
                 const itemElement = document.createElement("div");
-                itemElement.classList.add("flex", "justify-between", "border-b", "pb-2", "mb-2");
+                itemElement.classList.add("flex", "justify-between", "border-b", "border-gray-700", "pb-2", "mb-2");
                 itemElement.innerHTML = `
-                     <span class="text-blue-300">brand: ${item.brand}</span>
-                    <span class="text-blue-300">MOdel: ${item.model}</span>
-                    <span class="text-white font-bold"> ₹${item.price}</span>
+                    <span class="text-blue-300">Brand: ${item.brand}</span>
+                    <span class="text-blue-300">Model: ${item.model}</span>
+                    <span class="text-white font-bold">₹${item.price}</span>
                 `;
                 checkoutSummary.appendChild(itemElement);
                 totalPrice += item.price;
@@ -88,13 +141,22 @@
 
             // Handle "Buy Now" button
             buyButton.addEventListener("click", async () => {
+                if (!addressForm.checkValidity()) {
+                    addressForm.reportValidity();
+                    return;
+                }
+
+                const formData = new FormData(addressForm);
+                const addressData = Object.fromEntries(formData.entries());
+
                 try {
                     const response = await fetch("/place-order", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
                             products: checkoutData,
-                            totalAmount: totalPrice + deliveryFee
+                            totalAmount: totalPrice + deliveryFee,
+                            shippingAddress: addressData
                         })
                     });
 
@@ -110,12 +172,6 @@
             });
         });
     </script>
-
 </body>
 
 </html>
-
-
-
-
-<!-- <span class="text-blue-300">Product ID: ${item.id}</span> for storing id into database -->
