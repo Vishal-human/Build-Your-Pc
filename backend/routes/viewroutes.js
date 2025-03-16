@@ -256,7 +256,6 @@ router.post('/place-order', async (req, res) => {
     }
 
     const { products, totalAmount } = req.body;
-
     const order = new Order({
       userId: req.session.user.id, // Ensure user is logged in
       products,
@@ -305,6 +304,10 @@ router.get('/orders', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch orders' });
   }
 });
+
+router.get('/about', async (req, res) => {
+  res.render('about')
+})
 
 
 
