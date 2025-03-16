@@ -255,13 +255,15 @@ router.post('/place-order', async (req, res) => {
       return res.status(401).json({ error: 'User not logged in' });
     }
 
-    const { products, totalAmount } = req.body;
+    const userId = req.session.user.id; // Extract userId properly
+    const { products, address, totalAmount } = req.body;
+
     const order = new Order({
-      userId: req.session.user.id, // Ensure user is logged in
+      userId,  // Now userId is properly defined
       products,
       totalAmount,
-      status: 'Pending',
-      createdAt: new Date()
+      address,
+      status: "Pending"
     });
 
     await order.save();

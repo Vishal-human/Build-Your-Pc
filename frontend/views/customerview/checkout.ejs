@@ -78,11 +78,11 @@
                     </div>
                     <div class="flex justify-between text-lg mt-2">
                         <span>Delivery Fee:</span>
-                        <span class="font-semibold">₹100</span>
+                        <span class="font-semibold">₹500</span>
                     </div>
                     <div class="flex justify-between text-xl font-bold mt-4">
                         <span>Total:</span>
-                        <span id="final-amount">₹100</span>
+                        <span id="final-amount">₹500</span>
                     </div>
                 </div>
 
@@ -126,10 +126,15 @@
 
             checkoutData.forEach(item => {
                 const itemElement = document.createElement("div");
-                itemElement.classList.add("flex", "justify-between", "border-b", "border-gray-700", "pb-2", "mb-2");
+                itemElement.classList.add("flex", "justify-between", "items-center", "border-b", "border-gray-700", "pb-3", "mb-3");
                 itemElement.innerHTML = `
-                    <span class="text-blue-300">Brand: ${item.brand}</span>
-                    <span class="text-blue-300">Model: ${item.model}</span>
+                    <div class="flex items-center space-x-4">
+                        <img src="${item.image}" alt="${item.model}" class="w-12 h-12 object-contain bg-gray-700 rounded">
+                        <div>
+                            <p class="text-blue-300">${item.brand}</p>
+                            <p class="text-sm text-gray-400">${item.model}</p>
+                        </div>
+                    </div>
                     <span class="text-white font-bold">₹${item.price}</span>
                 `;
                 checkoutSummary.appendChild(itemElement);
@@ -147,7 +152,15 @@
                 }
 
                 const formData = new FormData(addressForm);
-                const addressData = Object.fromEntries(formData.entries());
+                const addressData = {
+                    fullName: formData.get('fullName'),
+                    email: formData.get('email'),
+                    phone: formData.get('phone'),
+                    streetAddress: formData.get('streetAddress'),
+                    city: formData.get('city'),
+                    state: formData.get('state'),
+                    zipCode: formData.get('zipCode')
+                };
 
                 try {
                     const response = await fetch("/place-order", {
@@ -155,8 +168,16 @@
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
                             products: checkoutData,
-                            totalAmount: totalPrice + deliveryFee,
-                            shippingAddress: addressData
+                            address: {
+                                fullName: addressData.fullName,
+                                email: addressData.email,
+                                phoneNumber: addressData.phone, // Changed from phone to phoneNumber
+                                streetAddress: addressData.streetAddress,
+                                city: addressData.city,
+                                state: addressData.state,
+                                zipCode: addressData.zipCode
+                            },
+                            totalAmount: totalPrice + deliveryFee
                         })
                     });
 
