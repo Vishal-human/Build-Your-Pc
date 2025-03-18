@@ -4,8 +4,11 @@ const OrderSchema = new mongoose.Schema({
     userId: { type: String, required: true },
     products: [{ id: String, price: Number }],
     totalAmount: Number,
-    status: { type: String, default: "Pending" },
-    createdAt: { type: Date, default: Date.now },
+    status: {
+        type: String,
+        enum: ['Pending', 'Shipped', 'Delivered', 'Canceled'],
+        default: 'Pending'
+    }, createdAt: { type: Date, default: Date.now },
     address: {
         fullName: String,
         email: String,
@@ -14,7 +17,8 @@ const OrderSchema = new mongoose.Schema({
         city: String,
         state: String,
         zipCode: String
-    }
+    },
+    isActive: { type: Boolean, default: true }
 });
 
 module.exports = mongoose.model("Order", OrderSchema);

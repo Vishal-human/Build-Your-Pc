@@ -13,6 +13,7 @@ const PSU = require('../models/PSU');
 const Cabinet = require('../models/cabinet');
 const CPUCooler = require('../models/CPUCooler');
 const User = require('../models/User');
+const Order = require('../models/Order');
 //admin : /admin 
 
 router.get('/', (req, res) => {
@@ -121,13 +122,19 @@ router.get('/Productmanagement', async (req, res) => {
 router.get("/dashboard", async (req, res) => {
     try {
         const users = await User.find();
+        const order = await Order.find();
         console.log("Fetched Users:", users); // Debugging: Print users in the console
-        res.render('dashboard', { users });
+        res.render('dashboard', { users, order });
+
+
     } catch (error) {
         console.error("Error fetching users:", error);
         res.status(500).json({ success: false, message: "Server error", error: error.message });
     }
 });
+
+
+
 
 // router.get('/componentselection', async (req, res) => {
 //     try {

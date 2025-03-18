@@ -16,24 +16,6 @@
 </head>
 
 <body>
-    <script>
-        async function toggleUserStatus(userId) {
-            try {
-                const response = await fetch(`/users/${userId}/toggle`, { method: 'PUT' });
-                const data = await response.json();
-
-                if (data.success) {
-                    const button = document.getElementById(`toggle-btn-${userId}`);
-                    button.innerText = data.isActive ? "Deactivate" : "Activate";
-                    location.reload(); // Refresh to update status
-                } else {
-                    alert("Failed to update user status.");
-                }
-            } catch (error) {
-                console.error("Error toggling user status:", error);
-            }
-        }
-    </script>
     <div class="min-h-screen flex">
         <!-- Sidebar -->
         <div class="w-64 bg-slate-800 text-white p-4">
@@ -107,14 +89,14 @@
                             Update Profile
                         </button>
                     </form>
-
-
-
                 </div>
             </section>
             <section id="customers" class="mb-8">
                 <div class="bg-slate-800 rounded-lg p-6">
                     <h2 class="text-2xl font-bold text-white mb-4">Customer Management</h2>
+                    <input type="text" id="customerSearchInput" placeholder="Search customers..."
+                        class="w-full p-2 mb-4 text-black rounded-lg">
+                    <p id="customerNoResultsMessage" class="text-red-400 hidden">No matching customer found.</p>
                     <div class="overflow-x-auto">
                         <table class="min-w-full text-white">
                             <thead>
@@ -126,17 +108,17 @@
                                 </tr>
                             </thead>
 
-                            <tbody id="productTableBody">
+                            <tbody id="customerTableBody">
                                 <% if (users && users.length> 0) { %>
                                     <% users.forEach(user=> { %>
-                                        <tr class="border-b border-slate-700">
-                                            <td class="px-4 py-2">
+                                        <tr class="border-b border-slate-700 customer-row">
+                                            <td class="px-4 py-2 customer-name">
                                                 <%= user.fullname %>
                                             </td>
-                                            <td class="px-4 py-2">
+                                            <td class="px-4 py-2 customer-email">
                                                 <%= user.email %>
                                             </td>
-                                            <td class="px-4 py-2">
+                                            <td class="px-4 py-2 customer-status">
                                                 <%= user.isActive ? 'Active' : 'Inactive' %>
                                             </td>
                                             <td class="px-4 py-2">
@@ -156,7 +138,6 @@
                                                 <% } %>
                             </tbody>
                         </table>
-
                     </div>
                 </div>
             </section>
@@ -165,6 +146,10 @@
             <section id="orders">
                 <div class="bg-slate-800 rounded-lg p-6">
                     <h2 class="text-2xl font-bold text-white mb-4">Order Management</h2>
+                    <input type="text" id="searchInput" placeholder="Search Orders..."
+                        class="w-full p-2 mb-4 text-black rounded-lg">
+                    <p id="noResultsMessage" class="text-red-400 hidden">No matching orders found.</p>
+
                     <div class="overflow-x-auto">
                         <table class="min-w-full text-white">
                             <thead>
@@ -173,21 +158,35 @@
                                     <th class="px-4 py-2 text-left">Customer</th>
                                     <th class="px-4 py-2 text-left">Date</th>
                                     <th class="px-4 py-2 text-left">Status</th>
+                                    <th class="px-4 py-2 text-left">Total Amount</th>
                                     <th class="px-4 py-2 text-left">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Sample row -->
-                                <tr class="border-b border-slate-700">
-                                    <td class="px-4 py-2">#12345</td>
-                                    <td class="px-4 py-2">John Doe</td>
-                                    <td class="px-4 py-2">2024-01-20</td>
-                                    <td class="px-4 py-2">Shipped</td>
-                                    <td class="px-4 py-2">
-                                        <button class="text-blue-400 hover:text-blue-300 mr-2">View Details</button>
-                                        <button class="text-green-400 hover:text-green-300">Update Status</button>
-                                    </td>
-                                </tr>
+                                <% order.forEach(order=> { %>
+                                    <tr class="border-b border-slate-700 order-row">
+                                        <td class="px-4 py-2 order-id">
+                                            <%= order._id %>
+                                        </td>
+                                        <td class="px-4 py-2 customer-name">
+                                            <%= order.address ? order.address.fullName : "Guest" %>
+                                        </td>
+                                        <td class="px-4 py-2">
+                                            <%= new Date(order.createdAt).toLocaleDateString() %>
+                                        </td>
+                                        <td class="px-4 py-2 order-status" id="status-<%= order._id %>">
+                                            <%= order.status %>
+                                        </td>
+                                        <td class="px-4 py-2">₹<%= order.totalAmount %>
+                                        </td>
+                                        <td class="px-4 py-2">
+                                            <button class="text-blue-400 hover:text-blue-300 mr-2"
+                                                onclick="viewOrder('<%= order._id %>')">View</button>
+                                            <button class="text-green-400 hover:text-green-300"
+                                                onclick="updateOrderStatus('<%= order._id %>')">Update Status</button>
+                                        </td>
+                                    </tr>
+                                    <% }); %>
                             </tbody>
                         </table>
                     </div>
@@ -195,6 +194,98 @@
             </section>
         </div>
     </div>
+
+    <script>
+        async function toggleUserStatus(userId) {
+            try {
+                const response = await fetch(`/users/${userId}/toggle`, { method: 'PUT' });
+                const data = await response.json();
+
+                if (data.success) {
+                    const button = document.getElementById(`toggle-btn-${userId}`);
+                    button.innerText = data.isActive ? "Deactivate" : "Activate";
+                    location.reload(); // Refresh to update status
+                } else {
+                    alert("Failed to update user status.");
+                }
+            } catch (error) {
+                console.error("Error toggling user status:", error);
+            }
+        }
+
+        // Customer search functionality
+        document.getElementById('customerSearchInput').addEventListener('keyup', function () {
+            let searchValue = this.value.toLowerCase();
+            let rows = document.querySelectorAll('.customer-row');
+            let found = false;
+
+            rows.forEach(row => {
+                let customerName = row.querySelector('.customer-name').textContent.toLowerCase();
+                let customerEmail = row.querySelector('.customer-email').textContent.toLowerCase();
+                let customerStatus = row.querySelector('.customer-status').textContent.toLowerCase();
+
+                if (customerName.includes(searchValue) || customerEmail.includes(searchValue) || customerStatus.includes(searchValue)) {
+                    row.style.display = "";
+                    found = true;
+                } else {
+                    row.style.display = "none";
+                }
+            });
+
+            // Show "No Results Found" message if nothing matches
+            document.getElementById('customerNoResultsMessage').style.display = found ? "none" : "block";
+        });
+
+        // Orders search functionality
+        document.getElementById('searchInput').addEventListener('keyup', function () {
+            let searchValue = this.value.toLowerCase();
+            let rows = document.querySelectorAll('.order-row');
+            let found = false;
+
+            rows.forEach(row => {
+                let orderId = row.querySelector('.order-id').textContent.toLowerCase();
+                let customerName = row.querySelector('.customer-name').textContent.toLowerCase();
+                let orderStatus = row.querySelector('.order-status').textContent.toLowerCase();
+
+                if (orderId.includes(searchValue) || customerName.includes(searchValue) || orderStatus.includes(searchValue)) {
+                    row.style.display = "";
+                    found = true;
+                } else {
+                    row.style.display = "none";
+                }
+            });
+
+            // Show "No Results Found" message if nothing matches
+            document.getElementById('noResultsMessage').style.display = found ? "none" : "block";
+        });
+
+        function updateOrderStatus(orderId) {
+            let statusElement = document.getElementById(`status-${orderId}`);
+            let currentStatus = statusElement.textContent.trim();
+
+            let newStatus = currentStatus === "Pending" ? "Shipped" :
+                currentStatus === "Shipped" ? "Delivered" : "Delivered"; // Final stage
+
+            fetch(`/orders/${orderId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ status: newStatus })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        statusElement.textContent = newStatus;
+                        alert("Order status updated successfully!");
+                    } else {
+                        alert("Failed to update order status.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error updating order:", error);
+                    alert("Error updating order.");
+                });
+        }
+    </script>
 </body>
 
 </html>

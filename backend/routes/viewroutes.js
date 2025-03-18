@@ -172,6 +172,56 @@ router.put("/users/:id/toggle", async (req, res) => {
   }
 });
 
+
+// Add this to your order routes file
+router.put('/orders/:id/cancel', async (req, res) => {
+  try {
+    const orderId = req.params.id;
+
+    // Find the order
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({ success: false, message: "Order not found" });
+    }
+
+    // Check if order is already canceled
+    if (order.status === 'Canceled') {
+      return res.status(400).json({ success: false, message: "Order is already canceled" });
+    }
+
+    // Check if order can be canceled (you might want to add logic to prevent cancellation of shipped orders)
+    if (order.status === 'Delivered') {
+      return res.status(400).json({ success: false, message: "Cannot cancel delivered orders" });
+    }
+
+    // Update the order status to canceled
+    order.status = 'Canceled';
+    await order.save();
+
+    return res.status(200).json({ success: true, message: "Order canceled successfully" });
+  } catch (error) {
+    console.error("Error canceling order:", error);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+router.put("/orders/:id", async (req, res) => {
+  try {
+    const { status } = req.body;
+    const order = await Order.findByIdAndUpdate(req.params.id, { status }, { new: true });
+
+    if (!order) {
+      return res.status(404).json({ success: false, message: "Order not found" });
+    }
+
+    res.json({ success: true, message: "Order status updated successfully", order });
+  } catch (error) {
+    console.error("Error updating order:", error);
+    res.status(500).json({ success: false, message: "Server error", error: error.message });
+  }
+});
+
 router.get('/cpuselect', (req, res) => {
   res.render('CpuSelect', {
     title: 'Select Your CPU',
