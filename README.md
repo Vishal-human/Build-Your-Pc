@@ -77,19 +77,6 @@ Our PC Builder implements a comprehensive compatibility checking system to ensur
 The system performs these checks in real-time as components are selected, providing immediate feedback to users about compatibility issues and ensuring a successful build.
 
 
-### admin Cred
-
-```
-
-{
-  "_id": {
-    "$oid": "67a5b9faa2523d9e7232d069"
-  },
-  "adminusername": "admin@admin.com",
-  "password": "$2a$10$VzUnAQhL4l8s8nW2lsGv..AE8EVD6TrMkFr7nQMJ2OEbPXPM/3SDC",
-  "isActive": true,
-  "__v": 0
-}
 
 
 ```
